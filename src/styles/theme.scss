@@ -1,0 +1,98 @@
+@use '@angular/material' as mat;
+
+// Custom AgroAssist palette pour Angular Material
+$agroassist-primary: mat.define-palette((
+  50:   #E8F5EE,
+  100:  #C5E6D3,
+  200:  #8FCCA9,
+  300:  #5CB882,
+  400:  #2D9E64,
+  500:  #1A7A4A,
+  600:  #1A7A4A,
+  700:  #146040,
+  800:  #0F4D2E,
+  900:  #072918,
+  contrast: (
+    50:   rgba(black, 0.87),
+    100:  rgba(black, 0.87),
+    200:  rgba(black, 0.87),
+    300:  rgba(black, 0.87),
+    400:  white,
+    500:  white,
+    600:  white,
+    700:  white,
+    800:  white,
+    900:  white,
+  )
+), 600, 400, 800);
+
+$agroassist-accent: mat.define-palette((
+  400: #0D6B5E,
+  600: #085048,
+  contrast: (
+    400: white,
+    600: white,
+  )
+), 400, 400, 600);
+
+$agroassist-warn: mat.define-palette(mat.$red-palette);
+
+$agroassist-theme: mat.define-light-theme((
+  color: (
+    primary: $agroassist-primary,
+    accent: $agroassist-accent,
+    warn: $agroassist-warn,
+  ),
+  typography: mat.define-typography-config(
+    $font-family: "'Plus Jakarta Sans', sans-serif",
+  ),
+  density: 0,
+));
+
+@include mat.all-component-themes($agroassist-theme);
+
+// Override Material components pour cohérence design
+.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: #1e2630;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
+
+.mat-mdc-table {
+  background: white !important;
+}
+
+.mat-mdc-dialog-container {
+  --mdc-dialog-container-shape: 12px;
+}
+
+// Leaflet overrides
+.leaflet-container {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  border-radius: 12px;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+}
+
+// Parcelle label tooltip
+.parcelle-label {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 6px !important;
+  padding: 2px 8px !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  color: #1f2937 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.parcelle-label::before {
+  border-top-color: #e5e7eb !important;
+}
+
+// Chart.js canvas
+canvas {
+  max-width: 100%;
+}
