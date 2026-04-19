@@ -3,11 +3,18 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:3000/api',   // URL NestJS future
-  appName: 'AgroAssist',
+  appName: 'Petalia Farm OS',
   version: '1.0.0',
   mock: true,                            // true = services mock, false = vrais appels HTTP
   mapbox: {
     token: '',                           // À remplir pour Mapbox (optionnel, on utilise OSM)
+  },
+  sentinelhub: {
+    clientId: '',              // OAuth2 client ID (Sentinel Hub dashboard)
+    clientSecret: '',          // OAuth2 client secret
+    instanceId: '',            // WMS instance ID pour tuiles cartographiques
+    baseUrl: 'https://services.sentinel-hub.com',
+    maxCloudCoverage: 30,      // Filtre couverture nuageuse par defaut (%)
   },
   defaultLang: 'fr',
   timezone: 'Africa/Dakar',
@@ -59,6 +66,11 @@ export const API_ENDPOINTS = {
     base:       '/membres',
     byId:       (id: string) => `/membres/${id}`,
     disponibles:'/membres/disponibles',
+  },
+  recoltes: {
+    base:       '/recoltes',
+    byId:       (id: string) => `/recoltes/${id}`,
+    byParcelle: (id: string) => `/recoltes/parcelle/${id}`,
   },
   rapports: {
     kpis:       '/rapports/kpis',

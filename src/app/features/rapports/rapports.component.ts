@@ -7,6 +7,7 @@ import { IntrantService } from '../../core/services/intrant.service';
 import { VisiteService } from '../../core/services/visite.service';
 import { TacheService } from '../../core/services/tache.service';
 import { ParcelleService } from '../../core/services/parcelle.service';
+import { RecolteService } from '../../core/services/recolte.service';
 import { Visite } from '../../core/models/visite.model';
 import { Parcelle } from '../../core/models/parcelle.model';
 import { Tache } from '../../core/models/tache.model';
@@ -47,6 +48,18 @@ interface RapportVisite {
           <option value="mois">Ce mois</option>
           <option value="saison">Cette saison</option>
         </select>
+        <div class="relative">
+          <button class="btn-secondary text-sm flex items-center gap-1" (click)="showPdfOptions = !showPdfOptions">
+            <span class="material-icons text-[16px]" aria-hidden="true">tune</span> Sections
+          </button>
+          <div *ngIf="showPdfOptions" class="absolute right-0 top-full mt-2 z-30 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-xl p-3 w-56">
+            <p class="text-xs font-semibold text-gray-500 mb-2">Sections à inclure :</p>
+            <label *ngFor="let s of pdfSections" class="flex items-center gap-2 py-1 cursor-pointer">
+              <input type="checkbox" [(ngModel)]="s.included" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+              <span class="text-sm text-gray-700 dark:text-gray-300">{{ s.label }}</span>
+            </label>
+          </div>
+        </div>
         <button class="btn-primary flex items-center gap-2" (click)="genererPDF()" [disabled]="generatingPdf">
           <span class="material-icons text-[16px]" aria-hidden="true">{{ generatingPdf ? 'hourglass_top' : 'download' }}</span>
           {{ generatingPdf ? 'Génération...' : 'Générer PDF' }}
@@ -54,8 +67,21 @@ interface RapportVisite {
       </div>
     </app-page-header>
 
+    <!-- Barre de progression PDF -->
+    <div *ngIf="generatingPdf" class="mb-4">
+      <div class="card p-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Génération du rapport PDF...</span>
+          <span class="text-sm font-bold text-primary-600">{{ pdfProgress }}%</span>
+        </div>
+        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+          <div class="bg-primary-600 h-2 rounded-full transition-all duration-300" [style.width]="pdfProgress + '%'"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- KPI Cards -->
-    <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+    <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2 sm:gap-4 mb-6">
       <div class="card p-4 text-center">
         <span class="material-icons text-primary-600 text-[24px] mb-1" aria-hidden="true">fact_check</span>
         <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ kpis.visitesRealisees }}</p>
@@ -334,10 +360,47 @@ interface RapportVisite {
 
     <!-- Graphique consommation intrants vs budget -->
     <div class="card p-5 mt-4">
-      <h3 class="text-sm font-semibold text-gray-900 mb-4">Consommation intrants vs budget</h3>
+      <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">Consommation intrants vs budget</h3>
       <canvas *ngIf="!budgetChartError" #budgetChart height="100" role="img" aria-label="Graphique consommation intrants versus budget prévu"></canvas>
       <div *ngIf="budgetChartError" class="flex items-center justify-center h-32 text-sm text-gray-500">
         <span class="material-icons text-gray-400 mr-2" aria-hidden="true">error_outline</span> Impossible de charger le graphique
+      </div>
+    </div>
+
+    <!-- Classement des parcelles par rendement -->
+    <div *ngIf="classementRendement.length > 0" class="card overflow-hidden mt-4">
+      <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+        <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+          <span class="material-icons text-green-600 text-[18px]" aria-hidden="true">emoji_events</span>
+          Classement des parcelles par rendement
+        </h3>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gray-50 dark:bg-gray-700/50 text-xs text-gray-600 dark:text-gray-400">
+              <th class="text-left px-4 py-2.5 font-semibold">#</th>
+              <th class="text-left px-4 py-2.5 font-semibold">Parcelle</th>
+              <th class="text-left px-4 py-2.5 font-semibold">Culture</th>
+              <th class="text-right px-4 py-2.5 font-semibold">Rendement (t/ha)</th>
+              <th class="text-left px-4 py-2.5 font-semibold">Dernière récolte</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+            <tr *ngFor="let cr of classementRendement; let i = index" class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
+              <td class="px-4 py-2.5">
+                <span *ngIf="i === 0" class="text-yellow-500 font-bold">🥇</span>
+                <span *ngIf="i === 1" class="text-gray-400 font-bold">🥈</span>
+                <span *ngIf="i === 2" class="text-orange-600 font-bold">🥉</span>
+                <span *ngIf="i > 2" class="text-gray-500 dark:text-gray-400 font-medium">{{ i + 1 }}</span>
+              </td>
+              <td class="px-4 py-2.5 font-medium text-gray-700 dark:text-gray-300">{{ getParcelleNom(cr.parcelleId) }}</td>
+              <td class="px-4 py-2.5 text-gray-600 dark:text-gray-400 capitalize">{{ cr.culture }}</td>
+              <td class="px-4 py-2.5 text-right font-semibold text-green-700 dark:text-green-400">{{ cr.rendement }}</td>
+              <td class="px-4 py-2.5 text-gray-500 dark:text-gray-400">{{ cr.dateRecolte | date:'dd/MM/yyyy' }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   `,
@@ -346,6 +409,15 @@ export class RapportsComponent implements OnInit {
   @ViewChild('budgetChart') budgetChartRef!: ElementRef;
   loading = true;
   generatingPdf = false;
+  pdfProgress = 0;
+  showPdfOptions = false;
+  pdfSections = [
+    { id: 'kpis', label: 'Indicateurs clés', included: true },
+    { id: 'rendements', label: 'Rendement par culture', included: true },
+    { id: 'problemes', label: 'Problèmes détectés', included: true },
+    { id: 'activite', label: 'Activité hebdomadaire', included: true },
+    { id: 'budget', label: 'Budget vs Consommation', included: true },
+  ];
   periode: 'semaine' | 'mois' | 'saison' = 'mois';
 
   kpis: KpiRapport = { visitesRealisees: 0, haCouvertes: 0, tachesClosees: 0, coutIntrants: 0, rendementMoyen: 0, tauxAlertesResolues: 0 };
@@ -355,6 +427,7 @@ export class RapportsComponent implements OnInit {
   equipes: Equipe[] = [];
   rapportsVisites: RapportVisite[] = [];
   selectedRapport: RapportVisite | null = null;
+  classementRendement: { parcelleId: string; culture: string; rendement: number; dateRecolte: Date }[] = [];
 
   private budgetChartInstance: any = null;
   private maxProbleme = 1;
@@ -371,6 +444,7 @@ export class RapportsComponent implements OnInit {
     private visiteService: VisiteService,
     private tacheService: TacheService,
     private parcelleService: ParcelleService,
+    private recolteService: RecolteService,
     private themeService: ThemeService,
     private cdr: ChangeDetectorRef
   ) {
@@ -402,7 +476,7 @@ export class RapportsComponent implements OnInit {
       activite: this.rapportService.getActiviteMensuelle(),
       equipes: this.equipeService.getAll().pipe(take(1)),
       taches: this.tacheService.getAll().pipe(take(1)),
-      conso: this.intrantService.getConsommation30j(),
+      conso: this.intrantService.getConsommation30j().pipe(take(1)),
       visites: this.visiteService.getAll().pipe(take(1)),
       parcelles: this.parcelleService.getAll().pipe(take(1)),
     }).subscribe(data => {
@@ -427,10 +501,27 @@ export class RapportsComponent implements OnInit {
       this.cdr.markForCheck();
       setTimeout(() => this.initBudgetChart(data.conso), 100);
     });
+
+    // Classement rendement depuis récoltes
+    this.recolteService.getClassementRendement().pipe(take(1)).subscribe(classement => {
+      this.classementRendement = classement;
+      this.cdr.markForCheck();
+    });
+  }
+
+  private isSectionIncluded(id: string): boolean {
+    return this.pdfSections.find(s => s.id === id)?.included ?? true;
+  }
+
+  private updateProgress(value: number): void {
+    this.pdfProgress = value;
+    this.cdr.markForCheck();
   }
 
   genererPDF(): void {
     this.generatingPdf = true;
+    this.showPdfOptions = false;
+    this.pdfProgress = 0;
     this.cdr.markForCheck();
 
     import('jspdf').then(({ jsPDF }) => {
@@ -439,55 +530,66 @@ export class RapportsComponent implements OnInit {
       const dateStr = now.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
       let y = 20;
 
+      this.updateProgress(10);
+
       // Header
       doc.setFontSize(20);
-      doc.setTextColor(26, 122, 74); // primary-600
-      doc.text('AgroAssist', 14, y);
+      doc.setTextColor(26, 122, 74);
+      doc.text('Petalia Farm OS', 14, y);
       doc.setFontSize(10);
       doc.setTextColor(100);
       doc.text(`Rapport de performance — ${this.periode === 'semaine' ? 'Cette semaine' : this.periode === 'mois' ? 'Ce mois' : 'Cette saison'}`, 14, y + 8);
       doc.text(`Généré le ${dateStr}`, 14, y + 14);
       y += 28;
 
-      // Ligne séparatrice
       doc.setDrawColor(200);
       doc.line(14, y, 196, y);
       y += 10;
 
+      this.updateProgress(20);
+
       // KPIs
-      doc.setFontSize(14);
-      doc.setTextColor(30);
-      doc.text('Indicateurs clés', 14, y);
-      y += 10;
-      doc.setFontSize(10);
-      doc.setTextColor(60);
-      const kpiLines = [
-        `Visites réalisées : ${this.kpis.visitesRealisees}`,
-        `Hectares couverts : ${this.kpis.haCouvertes}`,
-        `Tâches clôturées : ${this.kpis.tachesClosees}`,
-        `Coût intrants : ${this.formatFCFA(this.kpis.coutIntrants)} FCFA`,
-        `Rendement moyen : ${this.kpis.rendementMoyen} t/ha`,
-        `Taux alertes résolues : ${this.kpis.tauxAlertesResolues}%`,
-      ];
-      kpiLines.forEach(line => { doc.text(line, 18, y); y += 7; });
-      y += 6;
+      if (this.isSectionIncluded('kpis')) {
+        doc.setFontSize(14);
+        doc.setTextColor(30);
+        doc.text('Indicateurs clés', 14, y);
+        y += 10;
+        doc.setFontSize(10);
+        doc.setTextColor(60);
+        const kpiLines = [
+          `Visites réalisées : ${this.kpis.visitesRealisees}`,
+          `Hectares couverts : ${this.kpis.haCouvertes}`,
+          `Tâches clôturées : ${this.kpis.tachesClosees}`,
+          `Coût intrants : ${this.formatFCFA(this.kpis.coutIntrants)} FCFA`,
+          `Rendement moyen : ${this.kpis.rendementMoyen} t/ha`,
+          `Taux alertes résolues : ${this.kpis.tauxAlertesResolues}%`,
+        ];
+        kpiLines.forEach(line => { doc.text(line, 18, y); y += 7; });
+        y += 6;
+      }
+
+      this.updateProgress(35);
 
       // Rendements
-      doc.setFontSize(14);
-      doc.setTextColor(30);
-      doc.text('Rendement par culture', 14, y);
-      y += 10;
-      doc.setFontSize(10);
-      doc.setTextColor(60);
-      this.rendements.forEach(r => {
-        const pct = Math.round((r.rendement / r.objectif) * 100);
-        doc.text(`${r.culture} : ${r.rendement} t/ha sur ${r.objectif} t/ha (${pct}%)`, 18, y);
-        y += 7;
-      });
-      y += 6;
+      if (this.isSectionIncluded('rendements')) {
+        doc.setFontSize(14);
+        doc.setTextColor(30);
+        doc.text('Rendement par culture', 14, y);
+        y += 10;
+        doc.setFontSize(10);
+        doc.setTextColor(60);
+        this.rendements.forEach(r => {
+          const pct = Math.round((r.rendement / r.objectif) * 100);
+          doc.text(`${r.culture} : ${r.rendement} t/ha sur ${r.objectif} t/ha (${pct}%)`, 18, y);
+          y += 7;
+        });
+        y += 6;
+      }
+
+      this.updateProgress(50);
 
       // Problèmes
-      if (this.problemes.length) {
+      if (this.isSectionIncluded('problemes') && this.problemes.length) {
         doc.setFontSize(14);
         doc.setTextColor(30);
         doc.text('Problèmes détectés', 14, y);
@@ -501,8 +603,10 @@ export class RapportsComponent implements OnInit {
         y += 6;
       }
 
+      this.updateProgress(65);
+
       // Activité hebdomadaire
-      if (this.activite.length) {
+      if (this.isSectionIncluded('activite') && this.activite.length) {
         doc.setFontSize(14);
         doc.setTextColor(30);
         doc.text('Activité hebdomadaire', 14, y);
@@ -515,28 +619,35 @@ export class RapportsComponent implements OnInit {
         });
       }
 
+      this.updateProgress(80);
+
       // Budget chart image from canvas
-      const budgetCanvas = this.budgetChartRef?.nativeElement;
-      if (budgetCanvas) {
-        if (y > 220) { doc.addPage(); y = 20; }
-        doc.setFontSize(14);
-        doc.setTextColor(30);
-        doc.text('Budget vs Consommation', 14, y);
-        y += 6;
-        try {
-          const imgData = budgetCanvas.toDataURL('image/png');
-          doc.addImage(imgData, 'PNG', 14, y, 170, 70);
-          y += 76;
-        } catch (_) { /* canvas tainted — skip */ }
+      if (this.isSectionIncluded('budget')) {
+        const budgetCanvas = this.budgetChartRef?.nativeElement;
+        if (budgetCanvas) {
+          if (y > 220) { doc.addPage(); y = 20; }
+          doc.setFontSize(14);
+          doc.setTextColor(30);
+          doc.text('Budget vs Consommation', 14, y);
+          y += 6;
+          try {
+            const imgData = budgetCanvas.toDataURL('image/png');
+            doc.addImage(imgData, 'PNG', 14, y, 170, 70);
+            y += 76;
+          } catch (_) { /* canvas tainted — skip */ }
+        }
       }
+
+      this.updateProgress(95);
 
       // Footer
       doc.setFontSize(8);
       doc.setTextColor(150);
-      doc.text('AgroAssist — Rapport auto-généré', 14, 285);
+      doc.text('Petalia Farm OS — Rapport auto-généré', 14, 285);
 
-      doc.save(`rapport-agroassist-${this.periode}-${dateStr.replace(/\//g, '-')}.pdf`);
+      doc.save(`rapport-petalia-farm-os-${this.periode}-${dateStr.replace(/\//g, '-')}.pdf`);
       this.generatingPdf = false;
+      this.pdfProgress = 100;
       this.cdr.markForCheck();
     });
   }
@@ -606,7 +717,7 @@ export class RapportsComponent implements OnInit {
       // Header
       doc.setFontSize(20);
       doc.setTextColor(26, 122, 74);
-      doc.text('AgroAssist', 14, y);
+      doc.text('Petalia Farm OS', 14, y);
       doc.setFontSize(14);
       doc.setTextColor(30);
       doc.text('Rapport technique de visite', 14, y + 10);
@@ -673,13 +784,18 @@ export class RapportsComponent implements OnInit {
       // Footer
       doc.setFontSize(8);
       doc.setTextColor(150);
-      doc.text('AgroAssist — Rapport technique auto-généré', 14, 285);
+      doc.text('Petalia Farm OS — Rapport technique auto-généré', 14, 285);
 
       doc.save(`rapport-visite-${r.parcelleCode || r.visiteId}-${dateStr.replace(/\//g, '-')}.pdf`);
     });
   }
 
   budgetChartError = false;
+
+  getParcelleNom(id: string): string {
+    const p = this.parcelles.find(p => p.id === id);
+    return p ? p.nom : id;
+  }
 
   private initBudgetChart(conso: { type: string; quantite: number }[]): void {
     this.lastConso = conso;
@@ -690,9 +806,11 @@ export class RapportsComponent implements OnInit {
       this.budgetChartInstance = null;
     }
     try {
-    const dark = this.themeService.isDark();
-    const gridColor = dark ? '#374151' : '#f3f4f6';
-    const textColor = dark ? '#d1d5db' : undefined;
+    const style = getComputedStyle(document.documentElement);
+    const gridColor = style.getPropertyValue('--chart-grid').trim() || '#f3f4f6';
+    const textColor = style.getPropertyValue('--chart-text').trim() || '#374151';
+    const primaryColor = style.getPropertyValue('--chart-primary').trim() || '#1A7A4A';
+    const secondaryColor = style.getPropertyValue('--chart-secondary').trim() || '#d1d5db';
     const budgets = conso.map(d => Math.round(d.quantite * 1.3));
     this.budgetChartInstance = new Chart(ctx, {
       type: 'bar',
@@ -702,14 +820,14 @@ export class RapportsComponent implements OnInit {
           {
             label: 'Consommé',
             data: conso.map(d => d.quantite),
-            backgroundColor: dark ? '#22c55e' : '#1A7A4A',
+            backgroundColor: primaryColor,
             borderRadius: 4,
             borderSkipped: false,
           },
           {
             label: 'Budget prévu',
             data: budgets,
-            backgroundColor: dark ? '#4b5563' : '#d1d5db',
+            backgroundColor: secondaryColor,
             borderRadius: 4,
             borderSkipped: false,
           }

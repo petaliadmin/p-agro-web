@@ -225,7 +225,7 @@ export class VisiteDetailComponent implements OnInit {
 
       doc.setFontSize(20);
       doc.setTextColor(26, 122, 74);
-      doc.text('AgroAssist — Rapport de visite', 14, y);
+      doc.text('Petalia Farm OS — Rapport de visite', 14, y);
       y += 14;
       doc.setDrawColor(200);
       doc.line(14, y, 196, y);
@@ -268,7 +268,7 @@ export class VisiteDetailComponent implements OnInit {
 
       doc.setFontSize(8);
       doc.setTextColor(150);
-      doc.text('AgroAssist — Rapport auto-généré', 14, 285);
+      doc.text('Petalia Farm OS — Rapport auto-généré', 14, 285);
 
       doc.save(`Rapport_Visite_${v.id}.pdf`);
     });

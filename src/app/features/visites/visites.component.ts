@@ -28,7 +28,7 @@ import { take } from 'rxjs/operators';
     </app-page-header>
 
     <!-- Filtres -->
-    <div class="flex flex-wrap items-center gap-3 mb-5">
+    <div class="flex flex-wrap items-center gap-3 mb-6">
       <div class="relative flex-1 min-w-[200px] max-w-sm">
         <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-[18px]" aria-hidden="true">search</span>
         <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()"

@@ -4,7 +4,11 @@
       "Bash(npx ng:*)",
       "Bash(xargs grep:*)",
       "Bash(npm install:*)",
-      "Bash(npm ls:*)"
+      "Bash(npm ls:*)",
+      "WebSearch",
+      "WebFetch(domain:openweathermap.medium.com)",
+      "Bash(find C:\\\\Developement\\\\agroassist-web\\\\agroassist\\\\src:*)",
+      "Bash(ls:*)"
     ]
   }
 }

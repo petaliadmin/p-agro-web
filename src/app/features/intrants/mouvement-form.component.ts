@@ -27,38 +27,38 @@ import { take } from 'rxjs/operators';
 
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Type de mouvement</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type de mouvement</label>
           <select [(ngModel)]="form.type"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
             <option value="entree">Entrée (+)</option>
             <option value="sortie">Sortie (-)</option>
           </select>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Quantité *</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Quantité *</label>
           <input type="number" [(ngModel)]="form.quantite" min="1" step="1"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
             [class.border-red-300]="submitted && form.quantite <= 0"/>
-          <p *ngIf="submitted && form.quantite <= 0" class="text-xs text-red-500 mt-1">La quantité doit être > 0</p>
+          <p *ngIf="submitted && form.quantite <= 0" class="text-xs text-red-500 dark:text-red-400 mt-1">La quantité doit être > 0</p>
         </div>
 
         <div *ngIf="form.type === 'sortie'">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Parcelle destination</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Parcelle destination</label>
           <select [(ngModel)]="form.parcelleId"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
             <option value="">Aucune</option>
             <option *ngFor="let p of parcelles" [value]="p.id">{{ p.nom }}</option>
           </select>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Motif *</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Motif *</label>
           <input type="text" [(ngModel)]="form.motif"
             [placeholder]="form.type === 'entree' ? 'Ex: Réapprovisionnement fournisseur' : 'Ex: Application parcelle Nord'"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
             [class.border-red-300]="submitted && !form.motif.trim()"/>
-          <p *ngIf="submitted && !form.motif.trim()" class="text-xs text-red-500 mt-1">Le motif est requis</p>
+          <p *ngIf="submitted && !form.motif.trim()" class="text-xs text-red-500 dark:text-red-400 mt-1">Le motif est requis</p>
         </div>
       </div>
     </app-form-dialog>

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, BehaviorSubject, delay } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { Intrant, IntrantStats, MouvementIntrant } from '../models/intrant.model';
 import { MOCK_INTRANTS } from '../../../assets/mock-data/intrants.mock';
 import { environment, API_ENDPOINTS } from '../../../environments/environment';
@@ -108,19 +108,39 @@ export class IntrantService {
     );
   }
 
+  getCoutParParcelle(parcelleId: string): Observable<{ total: number; details: { intrantNom: string; quantite: number; unite: string; cout: number }[] }> {
+    return this.intrants$.pipe(
+      map(intrants => {
+        const details: { intrantNom: string; quantite: number; unite: string; cout: number }[] = [];
+        intrants.forEach(i => {
+          i.mouvements
+            .filter(m => m.type === 'sortie' && m.parcelleId === parcelleId)
+            .forEach(m => {
+              details.push({
+                intrantNom: i.nom,
+                quantite: m.quantite,
+                unite: i.unite,
+                cout: m.quantite * i.prixUnitaire,
+              });
+            });
+        });
+        return { total: details.reduce((s, d) => s + d.cout, 0), details };
+      }),
+      delay(100)
+    );
+  }
+
   getConsommation30j(): Observable<{ type: string; quantite: number }[]> {
     if (!environment.mock) {
       return this.http.get<{ type: string; quantite: number }[]>(this.apiUrl + API_ENDPOINTS.intrants.conso);
     }
-    // Calculer depuis les mouvements réels des 30 derniers jours
+    // En mode mock, utiliser toutes les sorties (les dates sont statiques)
     return this.intrants$.pipe(
       map(intrants => {
-        const il30j = new Date();
-        il30j.setDate(il30j.getDate() - 30);
         const consoParType: Record<string, number> = {};
         intrants.forEach(i => {
           i.mouvements
-            .filter(m => m.type === 'sortie' && new Date(m.date) >= il30j)
+            .filter(m => m.type === 'sortie')
             .forEach(m => {
               const type = i.type.charAt(0).toUpperCase() + i.type.slice(1);
               consoParType[type] = (consoParType[type] || 0) + m.quantite;

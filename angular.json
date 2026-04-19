@@ -26,24 +26,36 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/manifest.webmanifest"
             ],
             "styles": [
               "node_modules/leaflet/dist/leaflet.css",
               "node_modules/leaflet-draw/dist/leaflet.draw.css",
               "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+              "src/assets/fonts/material-icons.css",
               "src/styles/tailwind.css",
               "src/styles/theme.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "leaflet",
+              "leaflet-draw",
+              "leaflet.markercluster",
+              "html2canvas",
+              "canvg",
+              "core-js",
+              "raf",
+              "rgbcolor"
+            ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "300kb",
+                  "maximumWarning": "600kb",
                   "maximumError": "1mb"
                 },
                 {
@@ -54,7 +66,8 @@
               ],
               "outputHashing": "all",
               "optimization": true,
-              "sourceMap": false
+              "sourceMap": false,
+              "serviceWorker": "ngsw-config.json"
             },
             "development": {
               "optimization": false,

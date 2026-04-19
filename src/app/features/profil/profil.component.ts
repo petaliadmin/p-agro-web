@@ -30,67 +30,69 @@ import { User } from '../../core/models/user.model';
             <input #avatarInput type="file" accept="image/*" (change)="onAvatarChange($event)" class="hidden"/>
           </div>
           <div>
-            <h2 class="text-lg font-bold text-gray-900">{{ user?.prenom }} {{ user?.nom }}</h2>
-            <p class="text-sm text-gray-500 capitalize">{{ user?.role }}</p>
-            <p class="text-xs text-gray-500 mt-1">{{ user?.email }}</p>
+            <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ user?.prenom }} {{ user?.nom }}</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 capitalize">{{ user?.role }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ user?.email }}</p>
           </div>
         </div>
       </div>
 
       <!-- Formulaire informations -->
       <div class="card p-6">
-        <h3 class="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <span class="material-icons text-[18px] text-gray-500" aria-hidden="true">person</span>
+        <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <span class="material-icons text-[18px] text-gray-500 dark:text-gray-400" aria-hidden="true">person</span>
           Informations personnelles
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prénom</label>
             <input type="text" [(ngModel)]="form.prenom"
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom</label>
             <input type="text" [(ngModel)]="form.nom"
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
           </div>
           <div class="md:col-span-2">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Adresse email</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Adresse email</label>
             <input type="email" [(ngModel)]="form.email"
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
           </div>
         </div>
         <div class="flex justify-end mt-5">
-          <button (click)="saveInfos()" class="btn-primary text-sm flex items-center gap-2">
-            <span class="material-icons text-[16px]" aria-hidden="true">save</span> Enregistrer
+          <button (click)="saveInfos()" class="btn-primary text-sm flex items-center gap-2" [disabled]="savingInfos">
+            <span *ngIf="savingInfos" class="material-icons text-[16px] animate-spin" aria-hidden="true">refresh</span>
+            <span *ngIf="!savingInfos" class="material-icons text-[16px]" aria-hidden="true">save</span>
+            {{ savingInfos ? 'Enregistrement…' : 'Enregistrer' }}
           </button>
         </div>
       </div>
 
       <!-- Mot de passe -->
       <div class="card p-6">
-        <h3 class="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <span class="material-icons text-[18px] text-gray-500" aria-hidden="true">lock</span>
+        <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <span class="material-icons text-[18px] text-gray-500 dark:text-gray-400" aria-hidden="true">lock</span>
           Changer le mot de passe
         </h3>
         <div class="space-y-4 max-w-md">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Mot de passe actuel</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mot de passe actuel</label>
             <input type="password" [(ngModel)]="passwordForm.current"
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
               [class.border-red-300]="passwordSubmitted && !passwordForm.current"/>
             <p *ngIf="passwordSubmitted && !passwordForm.current" class="text-xs text-red-500 mt-1">Le mot de passe actuel est requis</p>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Nouveau mot de passe</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nouveau mot de passe</label>
             <input type="password" [(ngModel)]="passwordForm.newPassword"
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
               [class.border-red-300]="passwordSubmitted && passwordForm.newPassword.length > 0 && passwordForm.newPassword.length < 6"/>
             <p *ngIf="passwordSubmitted && passwordForm.newPassword.length > 0 && passwordForm.newPassword.length < 6" class="text-xs text-red-500 mt-1">Minimum 6 caractères</p>
             <!-- Indicateur de force -->
             <div *ngIf="passwordForm.newPassword.length > 0" class="mt-2">
               <div class="flex items-center gap-2">
-                <div class="flex-1 bg-gray-100 rounded-full h-1.5">
+                <div class="flex-1 bg-gray-100 dark:bg-gray-600 rounded-full h-1.5">
                   <div class="h-1.5 rounded-full transition-all"
                     [style.width]="passwordStrength.pct + '%'"
                     [class.bg-red-500]="passwordStrength.level === 'faible'"
@@ -105,9 +107,9 @@ import { User } from '../../core/models/user.model';
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Confirmer le nouveau mot de passe</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirmer le nouveau mot de passe</label>
             <input type="password" [(ngModel)]="passwordForm.confirm"
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
               [class.border-red-300]="passwordForm.confirm && passwordForm.newPassword !== passwordForm.confirm"/>
             <p *ngIf="passwordForm.confirm && passwordForm.newPassword !== passwordForm.confirm" class="text-xs text-red-500 mt-1">
               Les mots de passe ne correspondent pas
@@ -116,8 +118,10 @@ import { User } from '../../core/models/user.model';
         </div>
         <div class="flex justify-end mt-5">
           <button (click)="changePassword()" class="btn-primary text-sm flex items-center gap-2"
-            [disabled]="!passwordForm.current || !passwordForm.newPassword || passwordForm.newPassword !== passwordForm.confirm">
-            <span class="material-icons text-[16px]" aria-hidden="true">vpn_key</span> Modifier le mot de passe
+            [disabled]="savingPassword || !passwordForm.current || !passwordForm.newPassword || passwordForm.newPassword !== passwordForm.confirm">
+            <span *ngIf="savingPassword" class="material-icons text-[16px] animate-spin" aria-hidden="true">refresh</span>
+            <span *ngIf="!savingPassword" class="material-icons text-[16px]" aria-hidden="true">vpn_key</span>
+            {{ savingPassword ? 'Modification…' : 'Modifier le mot de passe' }}
           </button>
         </div>
       </div>
@@ -127,8 +131,20 @@ import { User } from '../../core/models/user.model';
 export class ProfilComponent {
   user: User | null = null;
   form = { prenom: '', nom: '', email: '' };
+  private originalForm = { prenom: '', nom: '', email: '' };
   passwordForm = { current: '', newPassword: '', confirm: '' };
   passwordSubmitted = false;
+  savingInfos = false;
+  savingPassword = false;
+
+  /** Used by CanDeactivate guard to check for unsaved changes */
+  get isDirty(): boolean {
+    return this.form.prenom !== this.originalForm.prenom
+      || this.form.nom !== this.originalForm.nom
+      || this.form.email !== this.originalForm.email
+      || this.passwordForm.current.length > 0
+      || this.passwordForm.newPassword.length > 0;
+  }
 
   get initials(): string {
     return (this.user?.prenom?.[0] || '') + (this.user?.nom?.[0] || '');
@@ -156,6 +172,7 @@ export class ProfilComponent {
     this.user = this.auth.getCurrentUser();
     if (this.user) {
       this.form = { prenom: this.user.prenom, nom: this.user.nom, email: this.user.email };
+      this.originalForm = { ...this.form };
     }
   }
 
@@ -169,14 +186,21 @@ export class ProfilComponent {
       this.toast.error('Adresse email invalide');
       return;
     }
-    this.auth.updateProfile({
-      prenom: this.form.prenom.trim(),
-      nom: this.form.nom.trim(),
-      email: this.form.email.trim(),
-    });
-    this.user = this.auth.getCurrentUser();
-    this.toast.success('Profil mis à jour avec succès');
+    this.savingInfos = true;
     this.cdr.markForCheck();
+    // Simulate async save
+    setTimeout(() => {
+      this.auth.updateProfile({
+        prenom: this.form.prenom.trim(),
+        nom: this.form.nom.trim(),
+        email: this.form.email.trim(),
+      });
+      this.user = this.auth.getCurrentUser();
+      this.originalForm = { ...this.form };
+      this.savingInfos = false;
+      this.toast.success('Profil mis à jour avec succès');
+      this.cdr.markForCheck();
+    }, 400);
   }
 
   onAvatarChange(event: Event): void {
@@ -215,10 +239,15 @@ export class ProfilComponent {
       this.toast.error('Les mots de passe ne correspondent pas');
       return;
     }
-    this.auth.changePassword(this.passwordForm.newPassword);
-    this.toast.success('Mot de passe modifié avec succès');
-    this.passwordForm = { current: '', newPassword: '', confirm: '' };
-    this.passwordSubmitted = false;
+    this.savingPassword = true;
     this.cdr.markForCheck();
+    setTimeout(() => {
+      this.auth.changePassword(this.passwordForm.newPassword);
+      this.toast.success('Mot de passe modifié avec succès');
+      this.passwordForm = { current: '', newPassword: '', confirm: '' };
+      this.passwordSubmitted = false;
+      this.savingPassword = false;
+      this.cdr.markForCheck();
+    }, 400);
   }
 }

@@ -1,6 +1,6 @@
 # AgroAssist — Plan de complétion projet
 
-> Dernière mise à jour : 2026-04-12 (Phases 17–23 complétées — phases 24+ en cours)
+> Dernière mise à jour : 2026-04-17 (Phases 0–43 complétées)
 > Légende : `[DONE]` `[TODO]` `[DOING]`
 
 ---
@@ -233,11 +233,27 @@
 | Phase 21 | **[AUDIT UX]** Cibles Tactiles & Mobile | **8/8** — 100% |
 | Phase 22 | **[AUDIT UX]** Accessibilite WCAG AA | **10/10** — 100% |
 | Phase 23 | **[AUDIT UX]** Etats chargement/erreur/vide | **10/10** — 100% |
-| Phase 24 | **[AUDIT UX]** Dark Mode complet | **0/10** — 0% |
-| Phase 25 | **[AUDIT UX]** Formulaires | **0/10** — 0% |
-| Phase 26 | **[AUDIT UX]** Design System | **0/10** — 0% |
-| Phase 27 | **[AUDIT UX]** UX Avancee & Optimisations | **0/15** — 0% |
-| **TOTAL** | | **205/250** — ~82% |
+| Phase 24 | **[AUDIT UX]** Dark Mode complet | **10/10** — 100% |
+| Phase 25 | **[AUDIT UX]** Formulaires | **10/10** — 100% |
+| Phase 26 | **[AUDIT UX]** Design System | **10/10** — 100% |
+| Phase 27 | **[AUDIT UX]** UX Avancee & Optimisations | **15/15** — 100% |
+| Phase 28 | Enrichir modele Parcelle | **10/10** — 100% |
+| Phase 29 | Intrants ameliores | **7/7** — 100% |
+| Phase 30 | Workflow Campagne | **9/9** — 100% |
+| Phase 31 | Irrigation & Pluviometrie | **7/7** — 100% |
+| Phase 32 | Main-d'oeuvre & Economique | **8/8** — 100% |
+| Phase 33 | Rendement & Recolte | **7/7** — 100% |
+| Phase 34 | Observations Terrain | **5/5** — 100% |
+| Phase 35 | Historique & Rotation | **5/5** — 100% |
+| Phase 36 | Planification & Recommandations | **7/7** — 100% |
+| Phase 37 | Rapports Technico-Economiques | **6/6** — 100% |
+| Phase 38 | Corrections Build & Optimisations | **3/3** — 100% |
+| Phase 39 | Apercu NDVI & Sante des Cultures | **12/12** — 100% |
+| Phase 40 | Planification Campagne & Interventions | **14/14** — 100% |
+| Phase 41 | Cycle de vie Campagne | **14/14** — 100% |
+| Phase 42 | Carte Publique (Profil Public) | **19/19** — 100% |
+| Phase 43 | Rapport PDF professionnel par parcelle | **24/24** — 100% |
+| **TOTAL** | | **362/362** — 100% |
 
 ---
 
@@ -449,16 +465,16 @@
 
 | # | Tache | Statut |
 |---|-------|--------|
-| 24.1 | Dashboard — adapter couleurs Chart.js selon theme (axes, grille, labels, fond) | `[TODO]` |
-| 24.2 | Rapports — adapter tous les graphiques au dark mode | `[TODO]` |
-| 24.3 | Ecouter `ThemeService` pour re-render les charts au changement de theme | `[TODO]` |
-| 24.4 | Utiliser CSS custom properties pour les couleurs des charts | `[TODO]` |
-| 24.5 | Login — ajouter classes `dark:` sur panneau gauche (fond, texte, stats) | `[TODO]` |
-| 24.6 | Parcelles — classes `dark:` sur cartes grille et panneau carte | `[TODO]` |
-| 24.7 | Taches — classes `dark:` sur colonnes Kanban et cartes de tache | `[TODO]` |
-| 24.8 | Profil/Parametres — classes `dark:` sur champs et sections | `[TODO]` |
-| 24.9 | Carte Leaflet — basculer sur tiles sombres (CartoDB dark_all) en dark mode | `[TODO]` |
-| 24.10 | Sidebar — corriger badge `text-white/90 bg-white/20` illisible → texte opaque | `[TODO]` |
+| 24.1 | Dashboard — adapter couleurs Chart.js selon theme (axes, grille, labels, fond) | `[DONE]` |
+| 24.2 | Rapports — adapter tous les graphiques au dark mode | `[DONE]` |
+| 24.3 | Ecouter `ThemeService` pour re-render les charts au changement de theme | `[DONE]` |
+| 24.4 | Utiliser CSS custom properties pour les couleurs des charts | `[DONE]` |
+| 24.5 | Login — ajouter classes `dark:` sur panneau gauche (fond, texte, stats) | `[DONE]` |
+| 24.6 | Parcelles — classes `dark:` sur cartes grille et panneau carte | `[DONE]` |
+| 24.7 | Taches — classes `dark:` sur colonnes Kanban et cartes de tache | `[DONE]` |
+| 24.8 | Profil/Parametres — classes `dark:` sur champs et sections | `[DONE]` |
+| 24.9 | Carte Leaflet — basculer sur tiles sombres (CartoDB dark_all) en dark mode | `[DONE]` |
+| 24.10 | Sidebar — corriger badge `text-white/90 bg-white/20` illisible → texte opaque | `[DONE]` |
 
 ---
 
@@ -466,16 +482,16 @@
 
 | # | Tache | Statut |
 |---|-------|--------|
-| 25.1 | Login — migrer vers `FormGroup` avec `Validators.required`, `Validators.email` | `[TODO]` |
-| 25.2 | Login — validation temps reel du format email (feedback on blur) | `[TODO]` |
-| 25.3 | Login — ajouter lien "Mot de passe oublie ?" | `[TODO]` |
-| 25.4 | Login — supprimer credentials pre-remplis en dur (risque securite) | `[TODO]` |
-| 25.5 | Login — feedback rate-limiting apres 3 tentatives echouees | `[TODO]` |
-| 25.6 | Profil — vider champs mot de passe apres changement reussi | `[TODO]` |
-| 25.7 | Profil — indicateur de force du mot de passe (faible/moyen/fort) | `[TODO]` |
-| 25.8 | Profil — desactiver bouton pendant soumission (eviter double-clic) | `[TODO]` |
-| 25.9 | Profil — `CanDeactivate` guard pour modifications non sauvegardees | `[TODO]` |
-| 25.10 | Parcelles/Visites/Taches — messages d'erreur inline sous chaque champ invalide | `[TODO]` |
+| 25.1 | Login — migrer vers `FormGroup` avec `Validators.required`, `Validators.email` | `[DONE]` |
+| 25.2 | Login — validation temps reel du format email (feedback on blur) | `[DONE]` |
+| 25.3 | Login — ajouter lien "Mot de passe oublie ?" | `[DONE]` |
+| 25.4 | Login — supprimer credentials pre-remplis en dur (risque securite) | `[DONE]` |
+| 25.5 | Login — feedback rate-limiting apres 3 tentatives echouees | `[DONE]` |
+| 25.6 | Profil — vider champs mot de passe apres changement reussi | `[DONE]` |
+| 25.7 | Profil — indicateur de force du mot de passe (faible/moyen/fort) | `[DONE]` |
+| 25.8 | Profil — desactiver bouton pendant soumission (eviter double-clic) | `[DONE]` |
+| 25.9 | Profil — `CanDeactivate` guard pour modifications non sauvegardees | `[DONE]` |
+| 25.10 | Parcelles/Visites/Taches — messages d'erreur inline sous chaque champ invalide | `[DONE]` |
 
 ---
 
@@ -483,16 +499,16 @@
 
 | # | Tache | Statut |
 |---|-------|--------|
-| 26.1 | `tailwind.config.js` — completer palette avec nuances 300, 500, 700 pour toutes les couleurs | `[TODO]` |
-| 26.2 | Standardiser padding pages : `p-4 lg:p-6` partout | `[TODO]` |
-| 26.3 | Standardiser gaps grilles : `gap-3 lg:gap-4` partout | `[TODO]` |
-| 26.4 | Standardiser titres de page : `text-xl font-semibold` partout | `[TODO]` |
-| 26.5 | Standardiser marges entre sections : `space-y-6` partout | `[TODO]` |
-| 26.6 | Creer `SearchInputComponent` reutilisable (icone, clear, debounce integre) | `[TODO]` |
-| 26.7 | Creer `FilterBarComponent` responsive (collapse sur mobile en accordeon) | `[TODO]` |
-| 26.8 | Creer `ChartContainerComponent` (wrapper Chart.js avec skeleton, erreur, dark mode) | `[TODO]` |
-| 26.9 | Definir durees standard animations : 150ms (hover), 200ms (expand), 300ms (page) | `[TODO]` |
-| 26.10 | Animer dropdowns topbar (transition-opacity + transition-transform) | `[TODO]` |
+| 26.1 | `tailwind.config.js` — completer palette avec nuances 300, 500, 700 pour toutes les couleurs | `[DONE]` |
+| 26.2 | Standardiser padding pages : `p-4 lg:p-6` partout | `[DONE]` |
+| 26.3 | Standardiser gaps grilles : `gap-3 lg:gap-4` partout | `[DONE]` |
+| 26.4 | Standardiser titres de page : `text-xl font-semibold` partout | `[DONE]` |
+| 26.5 | Standardiser marges entre sections : `space-y-6` partout | `[DONE]` |
+| 26.6 | Creer `SearchInputComponent` reutilisable (icone, clear, debounce integre) | `[DONE]` |
+| 26.7 | Creer `FilterBarComponent` responsive (collapse sur mobile en accordeon) | `[DONE]` |
+| 26.8 | Creer `ChartContainerComponent` (wrapper Chart.js avec skeleton, erreur, dark mode) | `[DONE]` |
+| 26.9 | Definir durees standard animations : 150ms (hover), 200ms (expand), 300ms (page) | `[DONE]` |
+| 26.10 | Animer dropdowns topbar (transition-opacity + transition-transform) | `[DONE]` |
 
 ---
 
@@ -500,21 +516,21 @@
 
 | # | Tache | Statut |
 |---|-------|--------|
-| 27.1 | Pagination — ajouter selecteur "Elements par page" (10, 25, 50) | `[TODO]` |
-| 27.2 | Pagination — afficher total "Affichage 1-10 sur 45 parcelles" | `[TODO]` |
-| 27.3 | Pagination — champ "Aller a la page" pour grands jeux de donnees | `[TODO]` |
-| 27.4 | Kanban — feedback visuel drag : ombre portee + opacite reduite sur source | `[TODO]` |
-| 27.5 | Notifications — grouper par date (Aujourd'hui, Hier, Cette semaine) | `[TODO]` |
-| 27.6 | Notifications — filtrer par type | `[TODO]` |
-| 27.7 | Rapports PDF — barre de progression pendant generation | `[TODO]` |
-| 27.8 | Rapports PDF — selection des sections a inclure | `[TODO]` |
-| 27.9 | KPI cards — micro-interaction hover : `scale(1.02)` + ombre plus forte | `[TODO]` |
-| 27.10 | Compteurs KPI — animation count-up au chargement du dashboard | `[TODO]` |
-| 27.11 | `NgOptimizedImage` — appliquer sur toutes les images pour optimisation auto | `[TODO]` |
-| 27.12 | Self-host Material Icons (supprimer CDN Google) | `[TODO]` |
-| 27.13 | Virtual scrolling `@angular/cdk/scrolling` sur listes longues (parcelles, notifications) | `[TODO]` |
-| 27.14 | PWA — `ng add @angular/pwa`, service worker, manifest, bandeau mise a jour | `[TODO]` |
-| 27.15 | Web Vitals — integrer mesure LCP < 2.5s, FID < 100ms, CLS < 0.1 | `[TODO]` |
+| 27.1 | Pagination — ajouter selecteur "Elements par page" (10, 25, 50) | `[DONE]` |
+| 27.2 | Pagination — afficher total "Affichage 1-10 sur 45 parcelles" | `[DONE]` |
+| 27.3 | Pagination — champ "Aller a la page" pour grands jeux de donnees | `[DONE]` |
+| 27.4 | Kanban — feedback visuel drag : ombre portee + opacite reduite sur source | `[DONE]` |
+| 27.5 | Notifications — grouper par date (Aujourd'hui, Hier, Cette semaine) | `[DONE]` |
+| 27.6 | Notifications — filtrer par type | `[DONE]` |
+| 27.7 | Rapports PDF — barre de progression pendant generation | `[DONE]` |
+| 27.8 | Rapports PDF — selection des sections a inclure | `[DONE]` |
+| 27.9 | KPI cards — micro-interaction hover : `scale(1.02)` + ombre plus forte | `[DONE]` |
+| 27.10 | Compteurs KPI — animation count-up au chargement du dashboard | `[DONE]` |
+| 27.11 | `NgOptimizedImage` — N/A (images dynamiques base64 uniquement) | `[DONE]` |
+| 27.12 | Self-host Material Icons (supprimer CDN Google) | `[DONE]` |
+| 27.13 | Virtual scrolling — N/A (pagination par page suffisante) | `[DONE]` |
+| 27.14 | PWA — service worker, manifest, bandeau mise a jour | `[DONE]` |
+| 27.15 | Web Vitals — integrer mesure LCP, INP, CLS | `[DONE]` |
 
 ---
 
@@ -545,3 +561,370 @@ Phase 22 (Accessibilite) → Phase 23 (Etats) → Phase 24 (Dark Mode)
 
 > Les phases 19-22 sont CRITIQUES et doivent etre priorisees.
 > Chaque phase est independante et peut etre implementee separement.
+
+---
+---
+
+# ENRICHISSEMENT DONNEES AGRICOLES & WORKFLOW — Plan d'amelioration
+
+> Base sur `context.md` (carnet de suivi agricole senegalais) vs etat actuel de l'application
+> Phases 28 a 37 — Objectif : completer les donnees metier et ameliorer le workflow de campagne
+
+### Analyse des ecarts context.md vs application
+
+| Domaine context.md | Etat actuel | Manque |
+|---------------------|-------------|--------|
+| Identification parcelle | Basique (nom, superficie, culture, zone) | Type de sol detaille, mode acces terre, source eau, zone agroecologique, variete, campagne |
+| Preparation parcelle | Non implemente | Labour, billonnage, mode travail (tracteur/attelé/manuel) |
+| Gestion intrants | Bon (stock, mouvements, alertes) | Origine semences, dose recommandee, frequence application, lien parcelle |
+| Irrigation/pluviometrie | Champ basique dans visite | Pas de suivi dedie, pas d'historique pluvio, pas d'evenements climatiques |
+| Activites culturales | Taches generiques | Pas de workflow campagne, pas de templates par culture, manque sarclage/labour |
+| Main-d'oeuvre | Membres avec role/dispo | Pas de type (familial/journalier), pas de cout journalier, pas de suivi economique |
+| Observations terrain | Bon (visite multi-etapes) | Manque problemes sol/vent/animaux, note qualitative |
+| Rendement/production | Rendement precedent sur parcelle | Pas de modele Recolte, pas de suivi pertes post-recolte |
+| Suivi economique | Non implemente | Aucun bilan financier par parcelle (couts, revenus, marge) |
+| Historique/rotation | Champ culture precedente | Pas de timeline, pas de recommandation rotation |
+| Planification | Prochaine visite sur parcelle | Pas de planificateur de campagne, pas de fiches techniques |
+
+---
+
+## Phase 28 — Enrichir le modele Parcelle (Priorite P1)
+
+| # | Tache | Statut |
+|---|-------|--------|
+| 28.1 | Ajouter au modele `Parcelle` : `exploitantNom`, `localite`, `zoneAgroecologique` (Niayes, Casamance, Vallee du Fleuve, Bassin arachidier, Senegal oriental, Zone sylvopastorale) | `[DONE]` |
+| 28.2 | Ajouter : `typeSol` detaille ('dior' \| 'deck' \| 'argileux' \| 'sableux' \| 'argilo-sableux' \| 'lateritique') | `[DONE]` |
+| 28.3 | Ajouter : `modeAccesTerre` ('propriete' \| 'pret' \| 'location' \| 'communautaire') | `[DONE]` |
+| 28.4 | Ajouter : `sourceEau` ('pluie' \| 'forage' \| 'canal' \| 'fleuve' \| 'bassin' \| 'puits') | `[DONE]` |
+| 28.5 | Ajouter : `variete` (string — ex: 55-437 pour arachide, Sahel 108 pour riz), `typeCampagne` ('hivernage' \| 'contre_saison_froide' \| 'contre_saison_chaude'), `dateSemis`, `densite` | `[DONE]` |
+| 28.6 | Ajouter : `culturePrecedente`, `rotationPrevue` (culture suivante) | `[DONE]` |
+| 28.7 | Mettre a jour `parcelles.mock.ts` — remplir tous les nouveaux champs avec donnees realistes senegalaises, ajouter 5+ nouvelles parcelles | `[DONE]` |
+| 28.8 | Mettre a jour le formulaire `ParcelleFormComponent` — organiser en sections (Identification, Culture, Terrain, Historique), listes deroulantes avec valeurs senegalaises | `[DONE]` |
+| 28.9 | Mettre a jour l'affichage parcelle-detail — afficher les nouveaux champs en sections | `[DONE]` |
+| 28.10 | Ajouter filtres dans parcelles.component : zone agroecologique, type de sol, campagne, source d'eau | `[DONE]` |
+
+---
+
+## Phase 29 — Gestion Intrants amelioree (Priorite P1)
+
+| # | Tache | Statut |
+|---|-------|--------|
+| 29.1 | Enrichir modele `Intrant` : `origine` ('marche' \| 'subvention' \| 'stock_personnel' \| 'cooperatif'), `doseRecommandee` (kg/ha), `frequenceApplication`, `cultureCible` | `[DONE]` |
+| 29.2 | Lier les mouvements de sortie a une parcelle specifique (champ `parcelleId` obligatoire sur sortie) | `[DONE]` |
+| 29.3 | Calculer automatiquement le cout intrants par parcelle depuis les mouvements | `[DONE]` |
+| 29.4 | Afficher dans parcelle-detail : section "Intrants utilises" avec liste + cout total FCFA | `[DONE]` |
+| 29.5 | Ajouter intrants typiques senegalais dans mock : uree (46-0-0), NPK 15-15-15, DAP, Decis, Karate, semences certifiees par culture | `[DONE]` |
+| 29.6 | Mettre a jour formulaire intrant avec les nouveaux champs | `[DONE]` |
+| 29.7 | Ajouter filtre par culture cible dans la page intrants | `[DONE]` |
+
+---
+
+## Phase 30 — Activites Culturales & Workflow Campagne (Priorite P1)
+
+| # | Tache | Statut |
+|---|-------|--------|
+| 30.1 | Ajouter types de tache manquants : 'labour' \| 'billonnage' \| 'sarclage' \| 'preparation_sol' \| 'buttage' | `[DONE]` |
+| 30.2 | Enrichir modele `Tache` : `modeTravail` ('manuel' \| 'tracteur' \| 'traction_animale'), `mainOeuvre` (nb personnes), `coutMainOeuvre` (FCFA) | `[DONE]` |
+| 30.3 | Creer modele `Campagne` : id, parcelleId, culture, variete, typeCampagne, dateDebut, dateFin, statut, etapes[] | `[DONE]` |
+| 30.4 | Creer templates de campagne par culture : enchainement type Preparation sol → Semis → Sarclage → Fertilisation → Traitement → Recolte | `[DONE]` |
+| 30.5 | Service `CampagneService` : creer campagne depuis template, generer taches automatiquement, suivre avancement | `[DONE]` |
+| 30.6 | Vue "Nouvelle campagne" : choisir parcelle + culture → generer les taches automatiquement | `[DONE]` |
+| 30.7 | Barre de progression campagne dans parcelle-detail (% des etapes completees) | `[DONE]` |
+| 30.8 | Vue calendrier cultural annuel — Gantt simplifie montrant les campagnes par parcelle, distinction hivernage/contre-saison | `[DONE]` |
+| 30.9 | Mock data : 2-3 campagnes en cours avec taches generees | `[DONE]` |
+
+---
+
+## Phase 31 — Irrigation & Pluviometrie (Priorite P2)
+
+| # | Tache | Statut |
+|---|-------|--------|
+| 31.1 | Creer modele `Irrigation` : parcelleId, type ('pluie' \| 'goutte_a_goutte' \| 'aspersion' \| 'bassin' \| 'submersion'), frequence, quantiteEstimee (mm), date, observations | `[DONE]` |
+| 31.2 | Creer modele `EvenementClimatique` : date, type ('secheresse' \| 'fortes_pluies' \| 'vent' \| 'inondation' \| 'grele'), impact, parcelleId, description | `[DONE]` |
+| 31.3 | Service `IrrigationService` + `ClimatiqueService` avec mock data | `[DONE]` |
+| 31.4 | Section irrigation dans parcelle-detail : historique arrosages, type systeme, alertes | `[DONE]` |
+| 31.5 | Widget pluviometrie dans dashboard : graphique pluies derniers 30 jours | `[DONE]` |
+| 31.6 | Indicateur stress hydrique dans la liste des parcelles (icone goutte) | `[DONE]` |
+| 31.7 | Mock data : evenements climatiques realistes pour la saison en cours | `[DONE]` |
+
+---
+
+## Phase 32 — Main-d'oeuvre & Gestion Economique (Priorite P2)
+
+| # | Tache | Statut |
+|---|-------|--------|
+| 32.1 | Enrichir modele `Membre` : `typeMainOeuvre` ('familial' \| 'journalier' \| 'groupement' \| 'permanent'), `coutJournalier` (FCFA) | `[DONE]` |
+| 32.2 | Calculer cout main-d'oeuvre par tache depuis (nb personnes × cout journalier × duree) | `[DONE]` |
+| 32.3 | Creer section "Bilan economique" dans parcelle-detail : cout intrants + cout main-d'oeuvre + cout transport | `[DONE]` |
+| 32.4 | Ajouter champ `coutTransport` sur les mouvements de sortie intrants | `[DONE]` |
+| 32.5 | Calculer marge brute automatique = Revenus - (Intrants + Main-d'oeuvre + Transport) | `[DONE]` |
+| 32.6 | Tableau recapitulatif technico-economique par parcelle | `[DONE]` |
+| 32.7 | Mettre a jour mock data membres avec types et couts realistes senegalais (3000-5000 FCFA/jour journalier) | `[DONE]` |
+| 32.8 | Mettre a jour formulaire membre avec les nouveaux champs | `[DONE]` |
+
+---
+
+## Phase 33 — Rendement, Recolte & Pertes (Priorite P2)
+
+| # | Tache | Statut |
+|---|-------|--------|
+| 33.1 | Creer modele `Recolte` : parcelleId, culture, variete, dateRecolte, quantiteRecoltee (kg), rendement (t/ha auto-calcule), pertesPostRecolte (kg), qualite ('A'\|'B'\|'C'), destination ('vente'\|'autoconsommation'\|'stockage'\|'transformation'), prixVente (FCFA/kg) | `[DONE]` |
+| 33.2 | Service `RecolteService` avec CRUD + calcul rendement automatique (quantite / superficie) | `[DONE]` |
+| 33.3 | Section recolte dans parcelle-detail : derniere recolte, rendement, comparaison vs precedent | `[DONE]` |
+| 33.4 | Alerte si taux de perte > 30% (seuil critique FAO) | `[DONE]` |
+| 33.5 | Graphique rendement par campagne (historique) dans parcelle-detail | `[DONE]` |
+| 33.6 | Classement des parcelles par rendement dans rapports | `[DONE]` |
+| 33.7 | Mock data : recoltes passees avec rendements realistes senegalais (riz: 4-6 t/ha irrigue, arachide: 0.8-1.5 t/ha, oignon: 20-30 t/ha) | `[DONE]` |
+
+---
+
+## Phase 34 — Observations Terrain ameliorees (Priorite P3)
+
+| # | Tache | Statut |
+|---|-------|--------|
+| 34.1 | Enrichir observations visite : `problemeSol` (erosion, salinite, compaction), `problemeVent`, `problemeAnimaux` (divagation betail) | `[DONE]` |
+| 34.2 | Ajouter `etatGeneral` note qualitative 1-5 etoiles | `[DONE]` |
+| 34.3 | Ajouter `actionRecommandeeImmediate` — action urgente a prendre | `[DONE]` |
+| 34.4 | Mettre a jour le formulaire visite avec les nouveaux champs | `[DONE]` |
+| 34.5 | Afficher les problemes terrain dans le dashboard (top problemes) | `[DONE]` |
+
+---
+
+## Phase 35 — Historique & Rotation des Cultures (Priorite P3)
+
+| # | Tache | Statut |
+|---|-------|--------|
+| 35.1 | Creer modele `HistoriqueCampagne` : parcelleId, annee, saison, culture, variete, rendement, observations | `[DONE]` |
+| 35.2 | Timeline visuelle dans parcelle-detail : historique des campagnes (arachide → mil → niebe → ...) | `[DONE]` |
+| 35.3 | Impact estime sur le sol : enrichissement azote pour legumineuses, appauvrissement pour cereales | `[DONE]` |
+| 35.4 | Recommandation automatique de la prochaine culture basee sur la rotation optimale | `[DONE]` |
+| 35.5 | Mock data : 2-3 campagnes passees par parcelle | `[DONE]` |
+
+---
+
+## Phase 36 — Planification & Recommandations Techniques (Priorite P3)
+
+| # | Tache | Statut |
+|---|-------|--------|
+| 36.1 | Formulaire planification prochaine campagne : culture, variete, date semis prevue, besoins estimes | `[DONE]` |
+| 36.2 | Estimation automatique besoins intrants depuis la superficie et les doses recommandees | `[DONE]` |
+| 36.3 | Estimation besoins main-d'oeuvre par etape de la campagne | `[DONE]` |
+| 36.4 | Budget previsionnel automatique : intrants + main-d'oeuvre + transport | `[DONE]` |
+| 36.5 | Fiches techniques par culture (arachide, riz, oignon, tomate, mais, mil) — varietes recommandees, calendrier, doses | `[DONE]` |
+| 36.6 | Alertes proactives basees sur le stade : "sarclage recommande a J+15 apres semis", "fertilisation NPK a la floraison" | `[DONE]` |
+| 36.7 | Calendrier previsionnel des interventions genere automatiquement | `[DONE]` |
+
+---
+
+## Phase 37 — Rapports Technico-Economiques (Priorite P3)
+
+| # | Tache | Statut |
+|---|-------|--------|
+| 37.1 | Rapport bilan par parcelle : investissements, rendement, marge brute, rentabilite | `[DONE]` |
+| 37.2 | Rapport bilan par campagne : performance globale toutes parcelles | `[DONE]` |
+| 37.3 | Comparaison entre parcelles (tableau croise) | `[DONE]` |
+| 37.4 | Comparaison entre campagnes n vs n-1 | `[DONE]` |
+| 37.5 | Export PDF rapport technico-economique complet | `[DONE]` |
+| 37.6 | Export Excel avec donnees detaillees (intrants, main-d'oeuvre, recoltes) | `[DONE]` |
+
+---
+
+## Resume des nouvelles phases (28-37)
+
+| Phase | Description | Priorite | Effort |
+|-------|-------------|----------|--------|
+| 28 | Enrichir modele Parcelle | P1 | 2-3 jours |
+| 29 | Intrants ameliores | P1 | 2 jours |
+| 30 | Workflow Campagne | P1 | 4-5 jours |
+| 31 | Irrigation & Pluviometrie | P2 | 2-3 jours |
+| 32 | Main-d'oeuvre & Economique | P2 | 3-4 jours |
+| 33 | Rendement & Recolte | P2 | 2-3 jours |
+| 34 | Observations Terrain | P3 | 1-2 jours |
+| 35 | Historique & Rotation | P3 | 2-3 jours |
+| 36 | Planification & Recommandations | P3 | 3-4 jours |
+| 37 | Rapports Technico-Economiques | P3 | 2-3 jours |
+| **TOTAL** | | | **~25-30 jours** |
+
+### Ordre d'implementation recommande
+
+```
+Phase 28 (Parcelles) → Phase 29 (Intrants) → Phase 30 (Workflow Campagne)
+         ↓                     ↓                        ↓
+Phase 32 (Main-d'oeuvre) → Phase 33 (Recolte) → Phase 31 (Irrigation)
+                                    ↓
+Phase 34 (Observations) → Phase 35 (Rotation) → Phase 36 (Planification)
+                                                         ↓
+                                              Phase 37 (Rapports Technico-Eco)
+```
+
+> **P1 (Phases 28-30)** : Fondations metier — enrichir les donnees existantes et creer le workflow de campagne
+> **P2 (Phases 31-33)** : Suivi complet — irrigation, couts, rendements
+> **P3 (Phases 34-37)** : Intelligence — observations, rotation, planification, rapports avances
+
+---
+
+## Phase 38 — Corrections Build & Optimisations (Post-audit)
+
+| # | Tache | Statut |
+|---|-------|--------|
+| 38.1 | Corriger 9 warnings NG8107 — optional chaining inutile dans `parcelles.component.ts` et `visite-form.component.ts` | `[DONE]` |
+| 38.2 | Ajouter `allowedCommonJsDependencies` dans `angular.json` pour Leaflet, html2canvas, canvg et plugins (supprimer 20+ warnings CommonJS) | `[DONE]` |
+| 38.3 | Ajuster budget initial de 300 kB a 600 kB (budget realiste pour Angular + Tailwind + Leaflet CSS) | `[DONE]` |
+
+---
+
+## Phase 39 — Apercu NDVI & Sante des Cultures (Priorite P2)
+
+> Objectif : Afficher un apercu visuel de l'indice NDVI (Normalized Difference Vegetation Index) sur chaque parcelle pour permettre un controle rapide de la sante globale des cultures.
+
+| # | Tache | Statut |
+|---|-------|--------|
+| 39.1 | Creer modele `NdviData` : parcelleId, date, ndviMoyen (0 a 1), ndviMin, ndviMax, resolution, source ('sentinel-2' \| 'landsat' \| 'drone'), zones[] (coordonnees + valeur NDVI locale) | `[DONE]` |
+| 39.2 | Creer service `NdviService` : getNdviByParcelle(id), getHistoriqueNdvi(id, dateDebut, dateFin), getNdviActuel(id) — mock data avec valeurs realistes par stade de culture | `[DONE]` |
+| 39.3 | Mock data NDVI : generer des donnees NDVI realistes par parcelle (semis: 0.1-0.2, levee: 0.3-0.4, tallage: 0.5-0.6, floraison: 0.7-0.8, maturation: 0.5-0.6, recolte: 0.2-0.3) + grille raster intra-parcelle avec variation spatiale | `[DONE]` |
+| 39.4 | Creer carte NDVI SIG raster dans `parcelle-detail` : overlay Leaflet avec grille de rectangles colores par interpolation continue (rouge→vert), fond satellite Esri, contour parcelle en tirets blancs, tooltips valeur par pixel | `[DONE]` |
+| 39.5 | Legende NDVI flottante SIG integree dans la carte : echelle gradient continu, labels interpretation, badge source/resolution | `[DONE]` |
+| 39.6 | Integrer dans `parcelle-detail` : section "Sante des cultures (NDVI)" avec carte SIG raster, jauge circulaire SVG, stats min/max/resolution/pixels, repartition zonale (% sain/attention/stress) | `[DONE]` |
+| 39.7 | Graphique historique NDVI dans parcelle-detail : courbe evolution NDVI sur la campagne en cours avec couleurs par point | `[DONE]` |
+| 39.8 | Widget NDVI sur la carte des parcelles (`parcelles.component`) : couche NDVI toggleable avec polygones colores par NDVI moyen, popup enrichi avec valeur NDVI, colonne NDVI en vue liste/grille | `[DONE]` |
+| 39.9 | Alertes NDVI : notification si NDVI chute de plus de 0.15 entre deux releves successifs (stress vegetation detecte) | `[DONE]` |
+| 39.10 | KPI dashboard : card "Sante globale cultures" avec NDVI moyen toutes parcelles + barres de progression repartition (% sain, % attention, % stress) | `[DONE]` |
+| 39.11 | Filtre parcelles par classe NDVI : "Sain (> 0.6)", "Attention (0.3-0.6)", "Stress (< 0.3)" dans le filtre de la liste | `[DONE]` |
+| 39.12 | Dark mode et responsive pour tous les composants NDVI (carte, jauge, legende, KPI dashboard, filtres) | `[DONE]` |
+
+---
+
+## Phase 40 — Planification Campagne & Interventions dans Parcelle-Detail (Priorite P1)
+
+> Objectif : Permettre de planifier une campagne et gerer toutes les interventions agricoles directement depuis la page detail d'une parcelle, sans naviguer ailleurs. L'utilisateur peut creer une campagne, ajouter/modifier/supprimer des interventions et suivre l'avancement depuis un seul ecran.
+
+| # | Tache | Statut |
+|---|-------|--------|
+| 40.1 | Creer modele `Intervention` : id, parcelleId, campagneId, type ('preparation_sol' \| 'labour' \| 'billonnage' \| 'semis' \| 'irrigation' \| 'fertilisation' \| 'traitement_phyto' \| 'desherbage' \| 'sarclage' \| 'buttage' \| 'recolte' \| 'post_recolte'), datePrevue, dateRealisee, statut ('planifiee' \| 'en_cours' \| 'terminee' \| 'annulee'), observations, produitUtilise, dose, coutEstime (FCFA), coutReel (FCFA), responsableId, mainOeuvre (nb personnes), dureeEstimee (heures) | `[DONE]` |
+| 40.2 | Creer service `InterventionService` : CRUD interventions, getByParcelle(id), getByCampagne(id), reordonner, marquer comme terminee | `[DONE]` |
+| 40.3 | Mock data : interventions types pour 2-3 parcelles avec mix planifiees/en cours/terminees | `[DONE]` |
+| 40.4 | Section "Planification campagne" dans parcelle-detail : bouton "Nouvelle campagne" → formulaire inline (culture, variete, type campagne, date debut, date fin prevue) | `[DONE]` |
+| 40.5 | Affichage campagne active dans parcelle-detail : barre de progression, dates, culture, nombre d'interventions completees/total | `[DONE]` |
+| 40.6 | Bouton "Ajouter intervention" dans parcelle-detail → formulaire modale : type (select avec icones), date prevue, produit, dose, cout estime, responsable, observations | `[DONE]` |
+| 40.7 | Timeline/liste des interventions dans parcelle-detail : affichage chronologique avec icone par type, statut colore (vert = terminee, bleu = en cours, gris = planifiee, rouge = annulee), actions (editer, supprimer, marquer terminee) | `[DONE]` |
+| 40.8 | Edition inline d'une intervention : clic sur une intervention → modale pre-remplie pour modifier | `[DONE]` |
+| 40.9 | Action rapide "Marquer terminee" : renseigner date realisee + cout reel + observations de terrain | `[DONE]` |
+| 40.10 | Templates d'interventions par culture : bouton "Generer le plan type" → pre-remplit les interventions standards selon la culture choisie (ex: arachide = preparation sol → semis → sarclage J+15 → fertilisation → traitement → recolte) | `[DONE]` |
+| 40.11 | Resume financier des interventions dans parcelle-detail : cout total estime vs reel, repartition par type d'intervention (camembert/barres) | `[DONE]` |
+| 40.12 | Calendrier mini des interventions dans parcelle-detail : vue mensuelle avec points colores par intervention planifiee/realisee | `[DONE]` |
+| 40.13 | Alertes interventions : notification si une intervention planifiee est en retard (datePrevue < aujourd'hui et statut = 'planifiee') | `[DONE]` |
+| 40.14 | Dark mode et responsive pour tous les composants de planification | `[DONE]` |
+
+---
+
+## Phase 41 — Cycle de vie Campagne : Cloture & Programmation (Priorite P1)
+
+> Objectif : Permettre de cloturer une campagne active sur une parcelle et d'en programmer une nouvelle directement depuis la page detail parcelle. Une parcelle ne peut avoir qu'une seule campagne `en_cours` a la fois.
+
+| # | Tache | Statut |
+|---|-------|--------|
+| 41.1 | Ajouter champs optionnels au modele `Campagne` : `rendementFinal` (t/ha), `observationsCloture` (texte libre) — `dateFin` existe deja | `[DONE]` |
+| 41.2 | `CampagneService.cloturerCampagne(id, params)` : passer statut a `terminee`, renseigner dateFin + rendementFinal + observationsCloture, progressionPct=100 | `[DONE]` |
+| 41.3 | `CampagneService.hasActiveCampagne(parcelleId)` : verifie si une campagne `en_cours` existe deja pour la parcelle | `[DONE]` |
+| 41.4 | `CampagneService.activerCampagne(id)` : passer une campagne `planifiee` a `en_cours` | `[DONE]` |
+| 41.5 | Modifier `CampagneService.creerCampagne()` : accepter param `planifiee?: boolean` pour creer avec statut `planifiee` au lieu de `en_cours` | `[DONE]` |
+| 41.6 | Creer `ClotureCampagneFormComponent` (dialog) : formulaire date de cloture, rendement final (t/ha), observations, checkbox "Programmer une nouvelle campagne ensuite" | `[DONE]` |
+| 41.7 | Creer `NouvelleCampagneFormComponent` (dialog) : formulaire culture, variete, type campagne, date semis, mode (lancer / programmer) | `[DONE]` |
+| 41.8 | Parcelle-detail — bouton "Nouvelle campagne" dans header card Campagnes + empty state quand aucune campagne | `[DONE]` |
+| 41.9 | Parcelle-detail — bouton "Cloturer" (stop_circle) par campagne `en_cours`, bouton "Demarrer" (play_circle) par campagne `planifiee` | `[DONE]` |
+| 41.10 | Parcelle-detail — methodes `openCloturerCampagne()`, `openNouvelleCampagne()`, `activerCampagne()`, `reloadCampagnes()` avec enchainement cloture → programmation | `[DONE]` |
+| 41.11 | Afficher `dateFin` dans la ligne campagne quand elle est renseignee | `[DONE]` |
+| 41.12 | Garde : empecher de lancer une nouvelle campagne `en_cours` si une existe deja (toast warning) — autoriser `planifiee` en parallele | `[DONE]` |
+| 41.13 | Dark mode et responsive pour les 2 dialogs et les nouveaux boutons | `[DONE]` |
+| 41.14 | Verification build et regression | `[DONE]` |
+
+---
+
+## Phase 42 — Carte Publique (Profil Public)
+
+> Objectif : Interface publique (sans authentification) avec carte Leaflet plein ecran
+> affichant toutes les parcelles, panneau de filtres/details lateral, et points d'interet
+> (village, marche, hopital, vendeur intrants, materiel agricole, source d'eau) pour
+> chaque parcelle selectionnee. Emissions carbone par parcelle.
+
+| # | Tache | Statut |
+|---|-------|--------|
+| 42.1 | Creer modele `PointOfInterest` et `CarbonEmission` dans `poi.model.ts` : categories (village, marche, source_eau, hopital, vendeur_intrants, materiel_agricole), coordonnees, telephone, email, site web, distance | `[DONE]` |
+| 42.2 | Creer mock data POI (`poi.mock.ts`) : 6 POIs par parcelle (78 total) avec noms senegalais realistes, telephones +221, distances en km, coordonnees proches des parcelles | `[DONE]` |
+| 42.3 | Creer mock data emissions carbone dans `poi.mock.ts` : 13 entries avec emissionKgCO2, emissionParHa, categorie (faible/moyen/eleve) | `[DONE]` |
+| 42.4 | Creer `PublicMapService` : facade getPublicParcelles(), getPoisByParcelle(id), getCarbonEmissions(), getCarbonByParcelle(id) | `[DONE]` |
+| 42.5 | Creer `CartePubliqueComponent` : layout plein ecran (header 48px + zone carte/panneau), standalone, OnPush, lazy-loaded | `[DONE]` |
+| 42.6 | Header minimal : logo AgroAssist, titre "Carte publique des parcelles", bouton theme dark/light, bouton toggle panneau (mobile) | `[DONE]` |
+| 42.7 | Carte Leaflet plein ecran : tuiles OSM/CartoDB (dark mode), centree Senegal, zoom 7, polygones colores par statut, circleMarkers, markerCluster | `[DONE]` |
+| 42.8 | Panneau lateral (380px, collapsible) avec 2 onglets : Filtres et Details | `[DONE]` |
+| 42.9 | Onglet Filtres : recherche par nom, select culture, select zone agroecologique, select statut, select source d'eau, select emission carbone, liste des parcelles filtrees cliquables | `[DONE]` |
+| 42.10 | Selection parcelle : animation flyToBounds vers le polygone, surbrillance du polygone selectionne, passage auto a l'onglet Details | `[DONE]` |
+| 42.11 | Onglet Details : fiche parcelle (nom, code, culture, superficie, type sol, source eau, zone, localite, stade, statut, emission CO2), bouton retour | `[DONE]` |
+| 42.12 | Section POI dans Details : cartes avec icone par categorie, nom, distance, telephone, email, site web — clic sur carte → pan vers POI sur la carte avec popup | `[DONE]` |
+| 42.13 | Marqueurs POI sur la carte : LayerGroup separe, divIcons colores par categorie, popups avec infos, affiches uniquement quand parcelle selectionnee | `[DONE]` |
+| 42.14 | Legende carte (overlay bas-gauche) : couleurs par statut parcelle | `[DONE]` |
+| 42.15 | Route `/carte-publique` dans app.routes.ts : hors shell, sans authGuard, lazy-loaded, titre "Carte des parcelles — AgroAssist" | `[DONE]` |
+| 42.16 | Responsive : panneau overlay sur mobile (< 768px), slide-in/out, backdrop, auto-ouverture sur selection | `[DONE]` |
+| 42.17 | Dark mode complet : tuiles CartoDB dark, panneau, header, legende, popups, cards POI | `[DONE]` |
+| 42.18 | Stats overlay (top-right) : nombre de parcelles filtrees et total hectares | `[DONE]` |
+| 42.19 | Verification build et regression | `[DONE]` |
+
+---
+
+## Phase 43 — Rapport PDF professionnel par parcelle
+
+> **Objectif** : Generer un rapport PDF complet et professionnel pour chaque parcelle, incluant toutes les donnees disponibles, des graphiques, diagrammes, carte, entete soignee et mise en page magazine/agronomique.
+>
+> **Librairie cible** : `jspdf` (deja installe v4.2.1) + `html2canvas` (a installer) pour capturer les graphiques Chart.js et les cartes Leaflet en images.
+>
+> **Architecture** : Un service `PdfReportService` injectable qui orchestre la generation, + un bouton "Telecharger PDF" dans la page parcelle-detail.
+
+### Analyse technique
+
+**Donnees disponibles par parcelle (toutes chargees dans parcelle-detail) :**
+- **Identification** : nom, code, zone, localite, producteurNom, technicienId, superficie, culture, variete, stade, statut
+- **Terrain** : typeSol, zoneAgroecologique, sourceEau, modeAccesTerre, coordonnees, geometry
+- **Campagne active** : culture, variete, typeCampagne, dateDebut, progressionPct, etapes
+- **Campagnes passees** : historique avec rendementFinal, dates, culture
+- **NDVI** : ndviMoyen, ndviMin, ndviMax, date, zones (raster), historique multi-dates
+- **Visites** : date, technicien, observations (etatGeneral, maladiesDetectees, ravageursDetectes, tauxCouverture, hauteurPlantes), recommandations
+- **Interventions** : type, datePrevue/Realisee, statut, coutEstime/Reel, produitUtilise, dose
+- **Irrigation** : type, frequence, quantite, dates, bilan hydrique (stress, pluviometrie30j)
+- **Intrants** : nom, type, quantite utilisee, date, unite, cout
+- **Evenements climatiques** : type, impact, description, date
+- **Rendement** : rendementPrecedent, evolution estimee
+
+**Approche technique :**
+1. Utiliser `jspdf` pour le layout page par page (A4 portrait)
+2. Utiliser `html2canvas` pour capturer les graphiques Chart.js (rendement, NDVI historique) et la carte Leaflet (localisation + NDVI) en images bitmap
+3. Generer les diagrammes circulaires/barres directement via Canvas API dans un canvas offscreen, puis les exporter en image
+4. Design professionnel : palette verte agriculture, header avec logo/bandeau, footer avec pagination, sections bien delimitees
+
+### Plan d'implementation
+
+| # | Tache | Statut |
+|---|-------|--------|
+| 43.1 | Installer `html2canvas` (`npm install html2canvas`) pour capture des graphiques et cartes en image | `[DONE]` |
+| 43.2 | Creer `src/app/core/services/pdf-report.service.ts` — service injectable standalone avec methode `generateParcelleReport(parcelle, data)` | `[DONE]` |
+| 43.3 | Implementer la page de garde PDF : bandeau vert en-tete avec titre "Rapport de Parcelle", logo AgroAssist (texte stylise), nom parcelle, code, date de generation, zone, producteur, superficie | `[DONE]` |
+| 43.4 | Section 1 — Fiche d'identite parcelle : tableau professionnel avec toutes les infos (culture, stade, type sol, source eau, zone agroeco, variete, mode acces terre, localite, coordonnees GPS) | `[DONE]` |
+| 43.5 | Section 2 — Carte de localisation : capture canvas de la carte Leaflet (satellite + polygone parcelle) via html2canvas, inseree dans le PDF avec legende | `[DONE]` |
+| 43.6 | Section 3 — Sante vegetale (NDVI) : capture de la carte NDVI (heatmap IDW sur satellite) + KPIs (moyen/min/max) + interpretation textuelle + legende couleur + date acquisition | `[DONE]` |
+| 43.7 | Section 4 — Evolution NDVI : capture du graphique Chart.js historique NDVI (courbe moyen + min/max), tableau complementaire des valeurs | `[DONE]` |
+| 43.8 | Section 5 — Campagne en cours : infos campagne (culture, type, dates, progression %), tableau des etapes avec statut, barre de progression visuelle | `[DONE]` |
+| 43.9 | Section 6 — Interventions : tableau des interventions (type, date prevue/realisee, statut, produit, dose, cout estime/reel), total cout en bas | `[DONE]` |
+| 43.10 | Section 7 — Bilan hydrique & irrigation : KPIs (pluviometrie 30j, stress, dernier arrosage), tableau irrigations, evenements climatiques | `[DONE]` |
+| 43.11 | Section 8 — Visites terrain : tableau des visites (date, technicien, statut, etat general etoiles, maladies, ravageurs, taux couverture), resume observations cles | `[DONE]` |
+| 43.12 | Section 9 — Intrants utilises : tableau des mouvements (intrant, quantite, unite, date, motif), cout total intrants | `[DONE]` |
+| 43.13 | Section 10 — Rendement & performance : capture graphique rendement (Chart.js), comparaison avec rendementPrecedent, campagnes passees (tableau historique avec culture, dates, rendement final) | `[DONE]` |
+| 43.14 | Diagramme circulaire : repartition des couts par categorie (intrants, main d'oeuvre, irrigation, traitements) — genere via Canvas API offscreen puis insere en image | `[DONE]` |
+| 43.15 | Diagramme barre : comparaison rendement par campagne passee — genere via Canvas API offscreen | `[DONE]` |
+| 43.16 | Footer professionnel sur chaque page : numero de page "Page X/Y", date de generation, mention "Genere par AgroAssist", ligne separatrice verte | `[DONE]` |
+| 43.17 | Gestion automatique du saut de page : detecter quand le contenu depasse la hauteur utile (A4 - header - footer) et inserer un saut de page propre avec continuation du header | `[DONE]` |
+| 43.18 | Ajouter bouton "Telecharger PDF" dans le header de `parcelle-detail.component.ts` (icone picture_as_pdf) avec loading state pendant la generation | `[DONE]` |
+| 43.19 | Helper : methode `captureElementAsImage(elementRef)` qui utilise html2canvas pour convertir un element DOM (carte, graphique) en data URL PNG | `[DONE]` |
+| 43.20 | Theme couleur du PDF : palette primaire (#1A7A4A vert fonce, #22c55e vert clair, #f8fafc fond clair), polices Helvetica (defaut jsPDF), titres gras, corps 10pt | `[DONE]` |
+| 43.21 | Sommaire automatique en page 2 : liste des sections avec numero de page correspondant (liens internes si possible) | `[DONE]` |
+| 43.22 | Gestion des donnees manquantes : chaque section verifie si les donnees existent, affiche "Aucune donnee disponible" en italique gris si absent, ne genere pas de section vide | `[DONE]` |
+| 43.23 | Tests et optimisation : verifier le rendu sur differentes parcelles (avec/sans campagne, avec/sans NDVI, avec/sans visites), corriger les debordements de texte et alignements | `[DONE]` |
+| 43.24 | Verification build et regression | `[DONE]` |

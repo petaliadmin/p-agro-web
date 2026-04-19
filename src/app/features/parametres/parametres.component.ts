@@ -28,7 +28,7 @@ import { SettingsService } from '../../core/services/settings.service';
               <p class="text-xs text-gray-500 dark:text-gray-400">Recevoir une notification quand un intrant passe sous le seuil</p>
             </div>
             <button (click)="prefs.alerteStock = !prefs.alerteStock"
-              class="relative w-11 h-6 rounded-full transition-colors" [class.bg-primary-600]="prefs.alerteStock" [class.bg-gray-300]="!prefs.alerteStock" [class.dark:bg-gray-600]="!prefs.alerteStock"
+              class="relative w-11 h-6 rounded-full transition-colors" [ngClass]="prefs.alerteStock ? 'bg-primary-600' : 'bg-gray-300 dark:bg-gray-600'"
               [attr.aria-label]="'Alertes stock critique : ' + (prefs.alerteStock ? 'activé' : 'désactivé')" role="switch" [attr.aria-checked]="prefs.alerteStock">
               <span class="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform"
                 [class.translate-x-5]="prefs.alerteStock" [class.translate-x-0.5]="!prefs.alerteStock"></span>
@@ -40,7 +40,7 @@ import { SettingsService } from '../../core/services/settings.service';
               <p class="text-xs text-gray-500 dark:text-gray-400">Rappel avant les visites terrain prévues</p>
             </div>
             <button (click)="prefs.rappelVisite = !prefs.rappelVisite"
-              class="relative w-11 h-6 rounded-full transition-colors" [class.bg-primary-600]="prefs.rappelVisite" [class.bg-gray-300]="!prefs.rappelVisite" [class.dark:bg-gray-600]="!prefs.rappelVisite"
+              class="relative w-11 h-6 rounded-full transition-colors" [ngClass]="prefs.rappelVisite ? 'bg-primary-600' : 'bg-gray-300 dark:bg-gray-600'"
               [attr.aria-label]="'Visites planifiées : ' + (prefs.rappelVisite ? 'activé' : 'désactivé')" role="switch" [attr.aria-checked]="prefs.rappelVisite">
               <span class="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform"
                 [class.translate-x-5]="prefs.rappelVisite" [class.translate-x-0.5]="!prefs.rappelVisite"></span>
@@ -52,7 +52,7 @@ import { SettingsService } from '../../core/services/settings.service';
               <p class="text-xs text-gray-500 dark:text-gray-400">Alerte quand une tâche dépasse sa date de fin</p>
             </div>
             <button (click)="prefs.alerteTache = !prefs.alerteTache"
-              class="relative w-11 h-6 rounded-full transition-colors" [class.bg-primary-600]="prefs.alerteTache" [class.bg-gray-300]="!prefs.alerteTache" [class.dark:bg-gray-600]="!prefs.alerteTache"
+              class="relative w-11 h-6 rounded-full transition-colors" [ngClass]="prefs.alerteTache ? 'bg-primary-600' : 'bg-gray-300 dark:bg-gray-600'"
               [attr.aria-label]="'Tâches en retard : ' + (prefs.alerteTache ? 'activé' : 'désactivé')" role="switch" [attr.aria-checked]="prefs.alerteTache">
               <span class="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform"
                 [class.translate-x-5]="prefs.alerteTache" [class.translate-x-0.5]="!prefs.alerteTache"></span>
@@ -64,7 +64,7 @@ import { SettingsService } from '../../core/services/settings.service';
               <p class="text-xs text-gray-500 dark:text-gray-400">Résumé automatique chaque lundi matin</p>
             </div>
             <button (click)="prefs.rapportHebdo = !prefs.rapportHebdo"
-              class="relative w-11 h-6 rounded-full transition-colors" [class.bg-primary-600]="prefs.rapportHebdo" [class.bg-gray-300]="!prefs.rapportHebdo" [class.dark:bg-gray-600]="!prefs.rapportHebdo"
+              class="relative w-11 h-6 rounded-full transition-colors" [ngClass]="prefs.rapportHebdo ? 'bg-primary-600' : 'bg-gray-300 dark:bg-gray-600'"
               [attr.aria-label]="'Rapports hebdomadaires : ' + (prefs.rapportHebdo ? 'activé' : 'désactivé')" role="switch" [attr.aria-checked]="prefs.rapportHebdo">
               <span class="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform"
                 [class.translate-x-5]="prefs.rapportHebdo" [class.translate-x-0.5]="!prefs.rapportHebdo"></span>
@@ -96,11 +96,12 @@ import { SettingsService } from '../../core/services/settings.service';
         <div class="flex gap-3">
           <button *ngFor="let t of themes" (click)="setTheme(t.id)"
             class="flex flex-col items-center gap-2 px-4 py-3 rounded-xl border-2 transition-all"
-            [class.border-primary-600]="prefs.theme === t.id" [class.bg-primary-50]="prefs.theme === t.id"
-            [class.border-gray-200]="prefs.theme !== t.id" [class.dark:border-gray-600]="prefs.theme !== t.id"
+            [ngClass]="prefs.theme === t.id
+              ? 'border-primary-600 bg-primary-50'
+              : 'border-gray-200 dark:border-gray-600'"
             [attr.aria-label]="'Thème ' + t.label">
             <span class="material-icons text-[24px]" aria-hidden="true" [class.text-primary-600]="prefs.theme === t.id" [class.text-gray-500]="prefs.theme !== t.id">{{ t.icon }}</span>
-            <span class="text-xs font-medium" [class.text-primary-700]="prefs.theme === t.id" [class.text-gray-600]="prefs.theme !== t.id" [class.dark:text-gray-300]="prefs.theme !== t.id">{{ t.label }}</span>
+            <span class="text-xs font-medium" [ngClass]="prefs.theme === t.id ? 'text-primary-700' : 'text-gray-600 dark:text-gray-300'">{{ t.label }}</span>
           </button>
         </div>
       </div>

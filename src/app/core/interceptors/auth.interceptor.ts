@@ -10,6 +10,11 @@ export const authInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> => {
+  // Ne pas injecter le token JWT pour les API externes (Sentinel Hub)
+  if (req.url.includes('sentinel-hub.com')) {
+    return next(req);
+  }
+
   const token = localStorage.getItem('agroassist_user')
     ? JSON.parse(localStorage.getItem('agroassist_user')!).token
     : null;

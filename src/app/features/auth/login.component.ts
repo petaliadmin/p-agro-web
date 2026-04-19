@@ -1,18 +1,18 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="min-h-screen flex bg-gray-50 dark:bg-gray-900">
       <!-- Left panel - illustration -->
-      <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden" style="background: #1A7A4A;">
+      <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-primary-600 dark:bg-primary-800">
         <!-- Motif géométrique SVG -->
         <svg class="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice">
           <circle cx="100" cy="100" r="200" fill="white"/>
@@ -32,7 +32,7 @@ import { AuthService } from '../../core/services/auth.service';
               </svg>
             </div>
             <div>
-              <p class="text-white font-bold text-xl">AgroAssist</p>
+              <p class="text-white font-bold text-xl">Petalia Farm OS</p>
               <p class="text-white/60 text-sm">Supervision agricole</p>
             </div>
           </div>
@@ -98,20 +98,32 @@ import { AuthService } from '../../core/services/auth.service';
                 <path d="M17 8c0-2.76-2.24-5-5-5S7 5.24 7 8c0 1.5.66 2.85 1.7 3.79L12 15l3.3-3.21A4.97 4.97 0 0017 8z"/>
               </svg>
             </div>
-            <p class="text-primary-600 font-bold text-xl">AgroAssist</p>
+            <p class="text-primary-600 font-bold text-xl">Petalia Farm OS</p>
           </div>
 
           <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Bon retour 👋</h1>
           <p class="text-gray-500 dark:text-gray-400 text-sm mb-8">Connectez-vous à votre espace de supervision</p>
 
+          <!-- Bandeau fromDraw -->
+          <div *ngIf="fromDraw" class="flex items-center gap-2 bg-primary-50 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800 rounded-lg px-4 py-3 mb-5">
+            <span class="material-icons text-primary-600 dark:text-primary-400 text-[18px]" aria-hidden="true">draw</span>
+            <p class="text-sm text-primary-700 dark:text-primary-300">Connectez-vous pour enregistrer la parcelle que vous avez dessinee.</p>
+          </div>
+
           <!-- Alerte erreur -->
-          <div *ngIf="errorMsg" role="alert" class="flex items-center gap-2 bg-red-50 border border-red-100 rounded-lg px-4 py-3 mb-5">
-            <span class="material-icons text-red-500 text-[18px]" aria-hidden="true">error_outline</span>
-            <p class="text-sm text-red-700">{{ errorMsg }}</p>
+          <div *ngIf="errorMsg" role="alert" class="flex items-center gap-2 bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-800 rounded-lg px-4 py-3 mb-5">
+            <span class="material-icons text-red-500 dark:text-red-400 text-[18px]" aria-hidden="true">error_outline</span>
+            <p class="text-sm text-red-700 dark:text-red-300">{{ errorMsg }}</p>
+          </div>
+
+          <!-- Rate limiting warning -->
+          <div *ngIf="isLocked" role="alert" class="flex items-center gap-2 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-100 dark:border-yellow-800 rounded-lg px-4 py-3 mb-5">
+            <span class="material-icons text-yellow-600 dark:text-yellow-400 text-[18px]" aria-hidden="true">lock_clock</span>
+            <p class="text-sm text-yellow-700 dark:text-yellow-300">Trop de tentatives. Réessayez dans {{ lockCountdown }} seconde(s).</p>
           </div>
 
           <!-- Formulaire -->
-          <form (ngSubmit)="onLogin()" class="space-y-5">
+          <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-5">
             <div>
               <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Adresse email</label>
               <div class="relative">
@@ -119,13 +131,16 @@ import { AuthService } from '../../core/services/auth.service';
                 <input
                   id="email"
                   type="email"
-                  [(ngModel)]="email"
-                  name="email"
-                  required
-                  placeholder="admin@agroassist.sn"
+                  formControlName="email"
+                  placeholder="votre@email.com"
                   class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all"
+                  [class.border-red-300]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
                 />
               </div>
+              <p *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched"
+                class="text-xs text-red-500 mt-1">L'email est requis</p>
+              <p *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched && !loginForm.get('email')?.hasError('required')"
+                class="text-xs text-red-500 mt-1">Format d'email invalide</p>
             </div>
 
             <div>
@@ -135,23 +150,31 @@ import { AuthService } from '../../core/services/auth.service';
                 <input
                   id="password"
                   [type]="showPassword ? 'text' : 'password'"
-                  [(ngModel)]="password"
-                  name="password"
-                  required
+                  formControlName="password"
                   placeholder="••••••••"
                   class="w-full pl-10 pr-10 py-2.5 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all"
+                  [class.border-red-300]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
                 />
                 <button type="button" (click)="showPassword = !showPassword"
-                  class="absolute right-1 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-600 w-10 h-10 flex items-center justify-center"
+                  class="absolute right-1 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 w-10 h-10 flex items-center justify-center"
                   [attr.aria-label]="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'">
                   <span class="material-icons text-[18px]" aria-hidden="true">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
                 </button>
               </div>
+              <p *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched"
+                class="text-xs text-red-500 mt-1">Le mot de passe est requis</p>
+            </div>
+
+            <!-- Mot de passe oublié -->
+            <div class="flex justify-end">
+              <button type="button" (click)="onForgotPassword()" class="text-xs text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 font-medium">
+                Mot de passe oublié ?
+              </button>
             </div>
 
             <button
               type="submit"
-              [disabled]="loading"
+              [disabled]="loading || loginForm.invalid || isLocked"
               class="w-full btn-primary py-2.5 flex items-center justify-center gap-2 text-base disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <svg *ngIf="loading" class="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none" aria-live="polite" role="status">
@@ -163,11 +186,11 @@ import { AuthService } from '../../core/services/auth.service';
           </form>
 
           <!-- Hint credentials -->
-          <div class="mt-6 p-4 bg-primary-50 border border-primary-100 rounded-lg">
-            <p class="text-xs font-semibold text-primary-700 mb-2">Comptes de démonstration :</p>
+          <div class="mt-6 p-4 bg-primary-50 dark:bg-primary-900/20 border border-primary-100 dark:border-primary-800 rounded-lg">
+            <p class="text-xs font-semibold text-primary-700 dark:text-primary-300 mb-2">Comptes de démonstration :</p>
             <div class="space-y-1">
-              <p class="text-xs text-primary-600"><span class="font-medium">Directeur :</span> admin&#64;agroassist.sn / password</p>
-              <p class="text-xs text-primary-600"><span class="font-medium">Superviseur :</span> superviseur&#64;agroassist.sn / password</p>
+              <p class="text-xs text-primary-600 dark:text-primary-400"><span class="font-medium">Directeur :</span> admin&#64;agroassist.sn / password</p>
+              <p class="text-xs text-primary-600 dark:text-primary-400"><span class="font-medium">Superviseur :</span> superviseur&#64;agroassist.sn / password</p>
             </div>
           </div>
         </div>
@@ -175,29 +198,92 @@ import { AuthService } from '../../core/services/auth.service';
     </div>
   `,
 })
-export class LoginComponent {
-  email = 'admin@agroassist.sn';
-  password = 'password';
+export class LoginComponent implements OnInit {
+  loginForm!: FormGroup;
   loading = false;
   errorMsg = '';
   showPassword = false;
 
-  constructor(private auth: AuthService, private router: Router, private cdr: ChangeDetectorRef) {}
+  // Rate limiting
+  private failedAttempts = 0;
+  private readonly maxAttempts = 3;
+  private readonly lockDurationSec = 30;
+  isLocked = false;
+  lockCountdown = 0;
+  private lockTimer: any;
+
+  fromDraw = false;
+
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
+  ) {}
+
+  ngOnInit(): void {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]],
+    });
+    this.fromDraw = this.route.snapshot.queryParams['fromDraw'] === 'true';
+  }
 
   onLogin(): void {
-    if (!this.email || !this.password) return;
+    if (this.loginForm.invalid || this.isLocked) return;
+
+    const { email, password } = this.loginForm.value;
     this.loading = true;
     this.errorMsg = '';
     this.cdr.markForCheck();
 
-    this.auth.login({ email: this.email, password: this.password }).subscribe(res => {
+    this.auth.login({ email, password }).subscribe(res => {
       this.loading = false;
       if (res.success) {
-        this.router.navigate(['/dashboard']);
+        this.failedAttempts = 0;
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+        this.router.navigateByUrl(returnUrl);
       } else {
-        this.errorMsg = res.error ?? 'Erreur de connexion';
+        this.failedAttempts++;
+        if (this.failedAttempts >= this.maxAttempts) {
+          this.startLockout();
+          this.errorMsg = '';
+        } else {
+          this.errorMsg = res.error ?? 'Identifiants incorrects';
+        }
       }
       this.cdr.markForCheck();
     });
+  }
+
+  onForgotPassword(): void {
+    // Placeholder — in a real app this would navigate to a reset page
+    this.errorMsg = '';
+    const email = this.loginForm.get('email')?.value;
+    if (email && this.loginForm.get('email')?.valid) {
+      this.errorMsg = '';
+      // Show a success-like message using the error field (simplified for mock)
+      this.errorMsg = `Un email de réinitialisation a été envoyé à ${email} (démo)`;
+    } else {
+      this.errorMsg = 'Veuillez saisir votre email avant de cliquer sur "Mot de passe oublié"';
+    }
+    this.cdr.markForCheck();
+  }
+
+  private startLockout(): void {
+    this.isLocked = true;
+    this.lockCountdown = this.lockDurationSec;
+    this.cdr.markForCheck();
+
+    this.lockTimer = setInterval(() => {
+      this.lockCountdown--;
+      if (this.lockCountdown <= 0) {
+        clearInterval(this.lockTimer);
+        this.isLocked = false;
+        this.failedAttempts = 0;
+      }
+      this.cdr.markForCheck();
+    }, 1000);
   }
 }

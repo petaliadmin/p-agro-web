@@ -1,6 +1,7 @@
-export type TypeTache = 'semis' | 'irrigation' | 'traitement' | 'fertilisation' | 'desherbage' | 'recolte' | 'inspection';
+export type TypeTache = 'semis' | 'irrigation' | 'traitement' | 'fertilisation' | 'desherbage' | 'recolte' | 'inspection' | 'labour' | 'billonnage' | 'sarclage' | 'preparation_sol' | 'buttage';
 export type PrioriteTache = 'urgent' | 'haute' | 'normale' | 'basse';
 export type StatutTache = 'todo' | 'en_cours' | 'done' | 'reporte';
+export type ModeTravail = 'manuel' | 'tracteur' | 'traction_animale';
 
 export interface Tache {
   id: string;
@@ -15,6 +16,12 @@ export interface Tache {
   description: string;
   ressources: string[];
   completionPct: number;
+
+  // Champs enrichis context.md
+  modeTravail?: ModeTravail;
+  mainOeuvre?: number;           // nombre de personnes
+  coutMainOeuvre?: number;       // FCFA
+  campagneId?: string;           // lien vers la campagne
 }
 
 export interface KanbanColumn {

@@ -1,4 +1,4 @@
-# 🌾 AgroAssist Web — Application de Supervision Agronomique
+# 🌾 Petalia Farm OS — Application de Supervision Agronomique
 
 Application Angular 17 de gestion agronomique destinée aux superviseurs et directeurs
 d'exploitation au **Sénégal et en Afrique de l'Ouest**.
@@ -172,7 +172,7 @@ Pour connecter un backend NestJS réel :
 
 ## Design System
 
-- **Couleur principale** : `#1A7A4A` (vert AgroAssist)
+- **Couleur principale** : `#1A7A4A` (vert Petalia Farm OS)
 - **Police** : Plus Jakarta Sans (400, 500, 600, 700)
 - **Breakpoints** : mobile < 768px · tablet 768-1279px · desktop ≥ 1280px
 - **Sidebar** : 256px (desktop) → 64px icônes (tablet) → drawer (mobile)
@@ -181,4 +181,4 @@ Pour connecter un backend NestJS réel :
 
 ## Licence
 
-Projet AgroAssist — Usage interne. Tous droits réservés.
+Projet Petalia Farm OS — Usage interne. Tous droits réservés.

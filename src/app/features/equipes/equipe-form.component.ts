@@ -26,30 +26,30 @@ import { take } from 'rxjs/operators';
 
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Nom de l'équipe *</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom de l'équipe *</label>
           <input type="text" [(ngModel)]="form.nom" placeholder="Ex: Équipe Fleuve Nord"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
             [class.border-red-300]="submitted && !form.nom.trim()"/>
-          <p *ngIf="submitted && !form.nom.trim()" class="text-xs text-red-500 mt-1">Le nom est requis</p>
+          <p *ngIf="submitted && !form.nom.trim()" class="text-xs text-red-500 dark:text-red-400 mt-1">Le nom est requis</p>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Zone *</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Zone *</label>
           <input type="text" [(ngModel)]="form.zone" placeholder="Ex: Vallée du Fleuve Sénégal"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
             [class.border-red-300]="submitted && !form.zone.trim()"/>
-          <p *ngIf="submitted && !form.zone.trim()" class="text-xs text-red-500 mt-1">La zone est requise</p>
+          <p *ngIf="submitted && !form.zone.trim()" class="text-xs text-red-500 dark:text-red-400 mt-1">La zone est requise</p>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Couleur</label>
-            <input type="color" [(ngModel)]="form.couleur" class="w-full h-10 rounded-lg border border-gray-200 cursor-pointer"/>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Couleur</label>
+            <input type="color" [(ngModel)]="form.couleur" class="w-full h-10 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer"/>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Chef d'équipe</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Chef d'équipe</label>
             <select [(ngModel)]="form.chefId"
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
               <option value="">Non assigné</option>
               <option *ngFor="let m of allMembres" [value]="m.id">{{ m.prenom }} {{ m.nom }}</option>
             </select>

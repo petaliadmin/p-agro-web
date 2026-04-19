@@ -6,7 +6,7 @@ import { DialogConfig, DialogRef } from '../../core/services/dialog.service';
 import { VisiteService } from '../../core/services/visite.service';
 import { ParcelleService } from '../../core/services/parcelle.service';
 import { ToastService } from '../../core/services/toast.service';
-import { Visite, StatutVisite } from '../../core/models/visite.model';
+import { Visite, StatutVisite, ProblemeSol, EtatGeneral } from '../../core/models/visite.model';
 import { Parcelle } from '../../core/models/parcelle.model';
 import { MOCK_MEMBRES } from '../../../assets/mock-data/taches.mock';
 import { take } from 'rxjs/operators';
@@ -30,43 +30,43 @@ import { take } from 'rxjs/operators';
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Parcelle -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Parcelle *</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Parcelle *</label>
           <select [(ngModel)]="form.parcelleId"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
             [class.border-red-300]="submitted && !form.parcelleId"
             [disabled]="!!preselectedParcelleId">
             <option value="">Sélectionner une parcelle</option>
             <option *ngFor="let p of parcelles" [value]="p.id">{{ p.nom }} ({{ p.code }})</option>
           </select>
-          <p *ngIf="submitted && !form.parcelleId" class="text-xs text-red-500 mt-1">La parcelle est requise</p>
+          <p *ngIf="submitted && !form.parcelleId" class="text-xs text-red-500 dark:text-red-400 mt-1">La parcelle est requise</p>
         </div>
 
         <!-- Technicien -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Technicien *</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Technicien *</label>
           <select [(ngModel)]="form.technicienId"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
             [class.border-red-300]="submitted && !form.technicienId">
             <option value="">Sélectionner un technicien</option>
             <option *ngFor="let m of techniciens" [value]="m.id">{{ m.prenom }} {{ m.nom }}</option>
           </select>
-          <p *ngIf="submitted && !form.technicienId" class="text-xs text-red-500 mt-1">Le technicien est requis</p>
+          <p *ngIf="submitted && !form.technicienId" class="text-xs text-red-500 dark:text-red-400 mt-1">Le technicien est requis</p>
         </div>
 
         <!-- Date -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Date de visite *</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date de visite *</label>
           <input type="datetime-local" [(ngModel)]="form.date"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
             [class.border-red-300]="submitted && !form.date"/>
-          <p *ngIf="submitted && !form.date" class="text-xs text-red-500 mt-1">La date est requise</p>
+          <p *ngIf="submitted && !form.date" class="text-xs text-red-500 dark:text-red-400 mt-1">La date est requise</p>
         </div>
 
         <!-- Statut -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Statut</label>
           <select [(ngModel)]="form.statut"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
             <option value="planifiee">Planifiée</option>
             <option value="en_cours">En cours</option>
             <option value="completee">Complétée</option>
@@ -75,16 +75,16 @@ import { take } from 'rxjs/operators';
 
         <!-- Durée -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Durée (minutes)</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Durée (minutes)</label>
           <input type="number" [(ngModel)]="form.duree" min="0" step="5"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
         </div>
 
         <!-- Étape actuelle -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Étape actuelle</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Étape actuelle</label>
           <select [(ngModel)]="form.etapeActuelle"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
             <option [ngValue]="1">1 — Accès parcelle</option>
             <option [ngValue]="2">2 — Observations</option>
             <option [ngValue]="3">3 — Sol & eau</option>
@@ -97,51 +97,51 @@ import { take } from 'rxjs/operators';
 
       <!-- Observations -->
       <div class="mt-5">
-        <h4 class="text-sm font-semibold text-gray-900 mb-3">Observations</h4>
+        <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">Observations</h4>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs text-gray-500 mb-1">Croissance</label>
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Croissance</label>
             <select [(ngModel)]="form.observations.croissance"
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
               <option value="excellente">Excellente</option>
               <option value="normale">Normale</option>
               <option value="faible">Faible</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs text-gray-500 mb-1">Couleur des feuilles</label>
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Couleur des feuilles</label>
             <select [(ngModel)]="form.observations.couleurFeuilles"
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
               <option value="verte">Verte</option>
               <option value="jaunissante">Jaunissante</option>
               <option value="brunissante">Brunissante</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs text-gray-500 mb-1">Hauteur plantes (cm)</label>
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Hauteur plantes (cm)</label>
             <input type="number" [(ngModel)]="form.observations.hauteurPlantes" min="0"
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
           </div>
           <div>
-            <label class="block text-xs text-gray-500 mb-1">Taux de couverture (%)</label>
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Taux de couverture (%)</label>
             <input type="number" [(ngModel)]="form.observations.tauxCouverture" min="0" max="100"
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
           </div>
           <div class="md:col-span-2">
             <label class="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" [(ngModel)]="form.observations.stressHydrique" class="rounded border-gray-300 text-primary-600 focus:ring-primary-400"/>
-              <span class="text-sm text-gray-700">Stress hydrique détecté</span>
+              <span class="text-sm text-gray-700 dark:text-gray-300">Stress hydrique détecté</span>
             </label>
           </div>
 
           <!-- Maladies détectées -->
           <div class="md:col-span-2">
-            <label class="block text-xs text-gray-500 mb-1">Maladies détectées</label>
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Maladies détectées</label>
             <div class="space-y-2">
               <div *ngFor="let m of form.observations.maladiesDetectees; let i = index; trackBy: trackByIndex" class="flex items-center gap-2">
                 <input type="text" [ngModel]="m" (ngModelChange)="form.observations.maladiesDetectees[i] = $event"
                   placeholder="Nom de la maladie"
-                  class="flex-1 px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
+                  class="flex-1 px-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
                 <button type="button" (click)="removeMaladie(i)" class="text-red-500 hover:text-red-700 p-1" aria-label="Supprimer maladie">
                   <span class="material-icons text-[18px]" aria-hidden="true">close</span>
                 </button>
@@ -154,12 +154,12 @@ import { take } from 'rxjs/operators';
 
           <!-- Ravageurs détectés -->
           <div class="md:col-span-2">
-            <label class="block text-xs text-gray-500 mb-1">Ravageurs détectés</label>
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Ravageurs détectés</label>
             <div class="space-y-2">
               <div *ngFor="let r of form.observations.ravageursDetectes; let i = index; trackBy: trackByIndex" class="flex items-center gap-2">
                 <input type="text" [ngModel]="r" (ngModelChange)="form.observations.ravageursDetectes[i] = $event"
                   placeholder="Nom du ravageur"
-                  class="flex-1 px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
+                  class="flex-1 px-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
                 <button type="button" (click)="removeRavageur(i)" class="text-red-500 hover:text-red-700 p-1" aria-label="Supprimer ravageur">
                   <span class="material-icons text-[18px]" aria-hidden="true">close</span>
                 </button>
@@ -172,42 +172,98 @@ import { take } from 'rxjs/operators';
         </div>
       </div>
 
+      <!-- Problèmes terrain -->
+      <div class="mt-5">
+        <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">Problèmes terrain</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- État général -->
+          <div>
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">État général de la parcelle</label>
+            <div class="flex items-center gap-1">
+              <button *ngFor="let star of etatStars" type="button" (click)="form.observations.etatGeneral = star"
+                class="p-1 text-xl transition-colors" [class.text-yellow-400]="star <= (form.observations.etatGeneral || 0)"
+                [class.text-gray-300]="star > (form.observations.etatGeneral || 0)"
+                [attr.aria-label]="star + ' étoiles'">
+                &#9733;
+              </button>
+              <span class="text-xs text-gray-500 dark:text-gray-400 ml-2">{{ form.observations.etatGeneral || 0 }}/5</span>
+            </div>
+          </div>
+
+          <!-- Problèmes de sol -->
+          <div>
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Problèmes de sol</label>
+            <div class="flex flex-wrap gap-2">
+              <label *ngFor="let p of problemeSolOptions" class="flex items-center gap-1.5 text-xs cursor-pointer">
+                <input type="checkbox" [checked]="(form.observations.problemeSol || []).includes(p.value)"
+                  (change)="toggleProblemeSol(p.value)"
+                  class="rounded border-gray-300 text-primary-600 focus:ring-primary-400"/>
+                <span class="text-gray-700 dark:text-gray-300">{{ p.label }}</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Problème vent -->
+          <div>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" [(ngModel)]="form.observations.problemeVent" class="rounded border-gray-300 text-primary-600 focus:ring-primary-400"/>
+              <span class="text-sm text-gray-700 dark:text-gray-300">Dégâts liés au vent</span>
+            </label>
+          </div>
+
+          <!-- Problème animaux -->
+          <div>
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Problème animaux</label>
+            <input type="text" [(ngModel)]="form.observations.problemeAnimaux" placeholder="Ex: divagation bétail, oiseaux granivores"
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
+          </div>
+
+          <!-- Action recommandée immédiate -->
+          <div class="md:col-span-2">
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Action urgente recommandée</label>
+            <textarea [(ngModel)]="form.observations.actionRecommandeeImmediate" rows="2"
+              placeholder="Ex: Clôturer la parcelle, traitement insecticide immédiat..."
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 resize-none"></textarea>
+          </div>
+        </div>
+      </div>
+
       <!-- Sol & Irrigation -->
       <div class="mt-5">
-        <h4 class="text-sm font-semibold text-gray-900 mb-3">Sol & Irrigation</h4>
+        <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">Sol & Irrigation</h4>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label class="block text-xs text-gray-500 mb-1">Humidité sol</label>
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Humidité sol</label>
             <select [(ngModel)]="form.sol.humidite"
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
               <option value="sec">Sec</option>
               <option value="normal">Normal</option>
               <option value="humide">Humide</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs text-gray-500 mb-1">pH du sol</label>
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">pH du sol</label>
             <input type="number" [(ngModel)]="form.sol.ph" min="0" max="14" step="0.1"
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
           </div>
           <div>
-            <label class="block text-xs text-gray-500 mb-1">Drainage</label>
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Drainage</label>
             <select [(ngModel)]="form.sol.drainage"
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
               <option value="bon">Bon</option>
               <option value="moyen">Moyen</option>
               <option value="mauvais">Mauvais</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs text-gray-500 mb-1">Type irrigation</label>
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Type irrigation</label>
             <input type="text" [(ngModel)]="form.irrigation.type" placeholder="Ex: Goutte-à-goutte"
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
           </div>
           <div class="md:col-span-2">
-            <label class="block text-xs text-gray-500 mb-1">Problème irrigation</label>
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Problème irrigation</label>
             <input type="text" [(ngModel)]="form.irrigation.probleme" placeholder="Aucun"
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
+              class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
           </div>
         </div>
       </div>
@@ -223,6 +279,14 @@ export class VisiteFormComponent implements OnInit {
   parcelles: Parcelle[] = [];
   techniciens = MOCK_MEMBRES.filter(m => m.role === 'technicien' || m.role === 'chef_equipe');
   preselectedParcelleId = '';
+  problemeSolOptions: { value: ProblemeSol; label: string }[] = [
+    { value: 'erosion', label: 'Érosion' },
+    { value: 'salinite', label: 'Salinité' },
+    { value: 'compaction', label: 'Compaction' },
+    { value: 'engorgement', label: 'Engorgement' },
+    { value: 'acidite', label: 'Acidité' },
+  ];
+  etatStars: (EtatGeneral | 0)[] = [1, 2, 3, 4, 5];
 
   form = {
     parcelleId: '',
@@ -239,6 +303,11 @@ export class VisiteFormComponent implements OnInit {
       stressHydrique: false,
       hauteurPlantes: 0,
       tauxCouverture: 0,
+      problemeSol: [] as ProblemeSol[],
+      problemeVent: false,
+      problemeAnimaux: '',
+      etatGeneral: 0 as EtatGeneral | 0,
+      actionRecommandeeImmediate: '',
     },
     sol: {
       humidite: 'normal' as 'sec' | 'normal' | 'humide',
@@ -283,7 +352,14 @@ export class VisiteFormComponent implements OnInit {
         statut: v.statut,
         duree: v.duree,
         etapeActuelle: v.etapeActuelle,
-        observations: { ...v.observations },
+        observations: {
+          ...v.observations,
+          problemeSol: v.observations.problemeSol || [],
+          problemeVent: v.observations.problemeVent || false,
+          problemeAnimaux: v.observations.problemeAnimaux || '',
+          etatGeneral: v.observations.etatGeneral || 0,
+          actionRecommandeeImmediate: v.observations.actionRecommandeeImmediate || '',
+        },
         sol: { ...v.sol },
         irrigation: { ...v.irrigation },
       };
@@ -322,6 +398,10 @@ export class VisiteFormComponent implements OnInit {
         ...this.form.observations,
         maladiesDetectees: this.form.observations.maladiesDetectees.filter(m => m.trim()),
         ravageursDetectes: this.form.observations.ravageursDetectes.filter(r => r.trim()),
+        problemeSol: this.form.observations.problemeSol.length > 0 ? this.form.observations.problemeSol : undefined,
+        problemeAnimaux: this.form.observations.problemeAnimaux?.trim() || undefined,
+        etatGeneral: this.form.observations.etatGeneral ? this.form.observations.etatGeneral as EtatGeneral : undefined,
+        actionRecommandeeImmediate: this.form.observations.actionRecommandeeImmediate?.trim() || undefined,
       },
       sol: this.form.sol,
       irrigation: { type: this.form.irrigation.type, probleme: this.form.irrigation.probleme || null },
@@ -376,6 +456,13 @@ export class VisiteFormComponent implements OnInit {
 
   removeRavageur(index: number): void {
     this.form.observations.ravageursDetectes.splice(index, 1);
+  }
+
+  toggleProblemeSol(value: ProblemeSol): void {
+    const arr = this.form.observations.problemeSol;
+    const idx = arr.indexOf(value);
+    if (idx >= 0) arr.splice(idx, 1);
+    else arr.push(value);
   }
 
   trackByIndex(index: number): number {

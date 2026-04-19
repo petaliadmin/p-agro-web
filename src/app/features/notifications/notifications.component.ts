@@ -6,6 +6,11 @@ import { PageHeaderComponent, EmptyStateComponent } from '../../shared/component
 import { NotificationService } from '../../core/services/notification.service';
 import { Notification } from '../../core/models/user.model';
 
+interface NotificationGroup {
+  label: string;
+  notifications: Notification[];
+}
+
 @Component({
   selector: 'app-notifications',
   standalone: true,
@@ -19,17 +24,17 @@ import { Notification } from '../../core/models/user.model';
     </app-page-header>
 
     <!-- Filtres -->
-    <div class="flex flex-wrap items-center gap-3 mb-5">
-      <div class="flex items-center bg-gray-100 rounded-lg p-1">
+    <div class="flex flex-wrap items-center gap-3 mb-6">
+      <div class="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
         <button *ngFor="let f of filtres" (click)="filtreActif = f.id; applyFilters()"
-          class="px-3 py-1.5 rounded-md text-xs font-medium transition-all"
-          [class.bg-white]="filtreActif === f.id" [class.shadow-sm]="filtreActif === f.id">
+          class="px-3 py-1.5 rounded-md text-xs font-medium transition-all dark:text-gray-300"
+          [ngClass]="filtreActif === f.id ? 'bg-white dark:bg-gray-700 shadow-sm' : ''">
           {{ f.label }}
           <span *ngIf="f.count > 0" class="ml-1 bg-primary-100 text-primary-700 rounded-full px-1.5 py-0.5 text-[10px] font-bold">{{ f.count }}</span>
         </button>
       </div>
       <select [(ngModel)]="filtreType" (ngModelChange)="applyFilters()"
-        class="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white">
+        class="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200">
         <option value="">Tous les types</option>
         <option value="alerte">Alertes</option>
         <option value="info">Informations</option>
@@ -38,51 +43,58 @@ import { Notification } from '../../core/models/user.model';
       </select>
     </div>
 
-    <!-- Liste -->
+    <!-- Liste groupée par date -->
     <div class="card overflow-hidden">
       <div *ngIf="!filtered.length" class="py-12">
         <app-empty-state icon="notifications_off" title="Aucune notification" subtitle="Vous êtes à jour !"></app-empty-state>
       </div>
-      <div class="divide-y divide-gray-50">
-        <div *ngFor="let n of filtered; trackBy: trackById"
-          (click)="marquerLue(n)"
-          class="flex items-start gap-4 px-5 py-4 cursor-pointer hover:bg-gray-50 transition-colors"
-          [class.bg-primary-50]="!n.lue">
-          <div class="flex-shrink-0 mt-0.5">
-            <div class="w-9 h-9 rounded-full flex items-center justify-center text-white"
-              [class.bg-red-500]="n.type === 'alerte'"
-              [class.bg-yellow-500]="n.type === 'avertissement'"
-              [class.bg-primary-600]="n.type === 'info'"
-              [class.bg-green-500]="n.type === 'succes'">
-              <span class="material-icons text-[18px]" aria-hidden="true">{{ iconForType(n.type) }}</span>
+      <ng-container *ngFor="let group of groupedNotifications; trackBy: trackByGroup">
+        <div class="px-5 py-2 bg-gray-50 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+          <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{{ group.label }}</span>
+          <span class="ml-2 text-[10px] text-gray-400">{{ group.notifications.length }}</span>
+        </div>
+        <div class="divide-y divide-gray-50 dark:divide-gray-700">
+          <div *ngFor="let n of group.notifications; trackBy: trackById"
+            (click)="marquerLue(n)"
+            class="flex items-start gap-4 px-5 py-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+            [ngClass]="!n.lue ? 'bg-primary-50 dark:bg-primary-900/20' : ''">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center text-white"
+                [class.bg-red-500]="n.type === 'alerte'"
+                [class.bg-yellow-500]="n.type === 'avertissement'"
+                [class.bg-primary-600]="n.type === 'info'"
+                [class.bg-green-500]="n.type === 'succes'">
+                <span class="material-icons text-[18px]" aria-hidden="true">{{ iconForType(n.type) }}</span>
+              </div>
             </div>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2">
-              <p class="text-sm font-medium text-gray-900" [class.font-semibold]="!n.lue">{{ n.titre }}</p>
-              <span class="text-[10px] rounded-full px-2 py-0.5 font-medium capitalize"
-                [class.bg-red-100]="n.type === 'alerte'" [class.text-red-700]="n.type === 'alerte'"
-                [class.bg-yellow-100]="n.type === 'avertissement'" [class.text-yellow-700]="n.type === 'avertissement'"
-                [class.bg-blue-100]="n.type === 'info'" [class.text-blue-700]="n.type === 'info'"
-                [class.bg-green-100]="n.type === 'succes'" [class.text-green-700]="n.type === 'succes'">
-                {{ n.type }}
-              </span>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <p class="text-sm font-medium text-gray-900 dark:text-gray-100" [class.font-semibold]="!n.lue">{{ n.titre }}</p>
+                <span class="text-[10px] rounded-full px-2 py-0.5 font-medium capitalize"
+                  [class.bg-red-100]="n.type === 'alerte'" [class.text-red-700]="n.type === 'alerte'"
+                  [class.bg-yellow-100]="n.type === 'avertissement'" [class.text-yellow-700]="n.type === 'avertissement'"
+                  [class.bg-blue-100]="n.type === 'info'" [class.text-blue-700]="n.type === 'info'"
+                  [class.bg-green-100]="n.type === 'succes'" [class.text-green-700]="n.type === 'succes'">
+                  {{ n.type }}
+                </span>
+              </div>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-0.5">{{ n.message }}</p>
+              <p class="text-xs text-gray-500 mt-1">{{ n.date | date:'dd/MM/yyyy · HH:mm' }}</p>
             </div>
-            <p class="text-sm text-gray-600 mt-0.5">{{ n.message }}</p>
-            <p class="text-xs text-gray-500 mt-1">{{ n.date | date:'dd/MM/yyyy · HH:mm' }}</p>
-          </div>
-          <div class="flex-shrink-0 mt-2 flex items-center gap-2">
-            <div *ngIf="!n.lue" class="w-2.5 h-2.5 rounded-full bg-primary-600"></div>
-            <span *ngIf="n.lienType && n.lienId" class="material-icons text-[16px] text-gray-400" aria-hidden="true">chevron_right</span>
+            <div class="flex-shrink-0 mt-2 flex items-center gap-2">
+              <div *ngIf="!n.lue" class="w-2.5 h-2.5 rounded-full bg-primary-600"></div>
+              <span *ngIf="n.lienType && n.lienId" class="material-icons text-[16px] text-gray-400" aria-hidden="true">chevron_right</span>
+            </div>
           </div>
         </div>
-      </div>
+      </ng-container>
     </div>
   `,
 })
 export class NotificationsComponent implements OnInit {
   notifications: Notification[] = [];
   filtered: Notification[] = [];
+  groupedNotifications: NotificationGroup[] = [];
   filtreActif = 'toutes';
   filtreType = '';
 
@@ -123,7 +135,37 @@ export class NotificationsComponent implements OnInit {
     if (this.filtreActif === 'lues') result = result.filter(n => n.lue);
     if (this.filtreType) result = result.filter(n => n.type === this.filtreType);
     this.filtered = result;
+    this.groupedNotifications = this.groupByDate(result);
   }
+
+  private groupByDate(notifs: Notification[]): NotificationGroup[] {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today.getTime() - 86400000);
+    const weekAgo = new Date(today.getTime() - 7 * 86400000);
+
+    const groups: Record<string, Notification[]> = {
+      "Aujourd'hui": [],
+      'Hier': [],
+      'Cette semaine': [],
+      'Plus ancien': [],
+    };
+
+    for (const n of notifs) {
+      const d = new Date(n.date);
+      const nDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      if (nDate.getTime() >= today.getTime()) groups["Aujourd'hui"].push(n);
+      else if (nDate.getTime() >= yesterday.getTime()) groups['Hier'].push(n);
+      else if (nDate.getTime() >= weekAgo.getTime()) groups['Cette semaine'].push(n);
+      else groups['Plus ancien'].push(n);
+    }
+
+    return Object.entries(groups)
+      .filter(([, list]) => list.length > 0)
+      .map(([label, notifications]) => ({ label, notifications }));
+  }
+
+  trackByGroup(_: number, group: NotificationGroup): string { return group.label; }
 
   marquerLue(n: Notification): void {
     if (!n.lue) {

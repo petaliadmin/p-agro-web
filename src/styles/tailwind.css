@@ -10,6 +10,24 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  :root {
+    --chart-grid: #f3f4f6;
+    --chart-text: #374151;
+    --chart-primary: #1A7A4A;
+    --chart-primary-light: #22c55e;
+    --chart-secondary: #d1d5db;
+    --chart-bg: #ffffff;
+  }
+
+  .dark {
+    --chart-grid: #374151;
+    --chart-text: #d1d5db;
+    --chart-primary: #22c55e;
+    --chart-primary-light: #4ade80;
+    --chart-secondary: #4b5563;
+    --chart-bg: #1f2937;
+  }
+
   body {
     @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100;
   }
@@ -87,6 +105,47 @@
   .skeleton {
     @apply bg-gray-200 rounded animate-pulse dark:bg-gray-700;
   }
+
+  /* 26.2 — Standardized page padding */
+  .page-padding {
+    @apply p-4 lg:p-6;
+  }
+
+  /* 26.3 — Standardized grid gaps */
+  .grid-gap {
+    @apply gap-3 lg:gap-4;
+  }
+
+  /* 26.4 — Standardized page title */
+  .page-title {
+    @apply text-xl font-semibold text-gray-900 dark:text-gray-100;
+  }
+
+  /* 26.5 — Standardized section spacing */
+  .section-spacing {
+    @apply space-y-6;
+  }
+
+  /* 26.9 — Standard animation durations */
+  .animate-hover {
+    @apply transition-all duration-150;
+  }
+  .animate-expand {
+    @apply transition-all duration-200;
+  }
+  .animate-page {
+    @apply transition-all duration-300;
+  }
+}
+
+/* 26.10 — Dropdown animation */
+@keyframes dropdown-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-dropdown {
+  animation: dropdown-in 200ms ease-out;
 }
 
 @layer utilities {
@@ -109,6 +168,21 @@
   .sidebar-width {
     width: 256px;
   }
+}
+
+/* NDVI tooltip styling */
+.ndvi-tooltip {
+  background: rgba(0, 0, 0, 0.85) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+.ndvi-tooltip::before {
+  border-top-color: rgba(0, 0, 0, 0.85) !important;
 }
 
 /* 22.9 — Réduire les animations pour les utilisateurs qui le préfèrent */

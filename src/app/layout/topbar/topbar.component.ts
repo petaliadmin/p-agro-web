@@ -7,6 +7,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { ThemeService } from '../../core/services/theme.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ParcelleService } from '../../core/services/parcelle.service';
@@ -20,8 +21,9 @@ import { Visite } from '../../core/models/visite.model';
 import { Tache } from '../../core/models/tache.model';
 import { Equipe } from '../../core/models/membre.model';
 import { Intrant } from '../../core/models/intrant.model';
-import { take } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
+import { KeyboardShortcutsService } from '../../core/services/keyboard-shortcuts.service';
 
 @Component({
   selector: 'app-topbar',
@@ -29,7 +31,10 @@ import { forkJoin } from 'rxjs';
   imports: [CommonModule, RouterModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <header class="fixed top-0 right-0 z-30 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 shadow-sm flex items-center px-6 transition-all duration-300"
+    <!-- Backdrop fermeture dropdowns -->
+    <div *ngIf="showNotifs || showUserMenu || showSearchResults" (click)="closeAll()" class="fixed inset-0 z-[55]"></div>
+
+    <header class="fixed top-0 right-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 shadow-sm flex items-center px-6 transition-all duration-300"
       [style.left]="sidebarWidth + 'px'"
       style="height: 64px;"
     >
@@ -51,10 +56,10 @@ import { forkJoin } from 'rxjs';
       </div>
 
       <!-- Desktop search / Mobile full-screen search -->
-      <div class="flex-1" [class.hidden]="isMobile && !mobileSearchOpen" [class.fixed]="isMobile && mobileSearchOpen"
-        [class.inset-0]="isMobile && mobileSearchOpen" [class.z-50]="isMobile && mobileSearchOpen"
-        [class.bg-white]="isMobile && mobileSearchOpen" [class.dark:bg-gray-800]="isMobile && mobileSearchOpen"
-        [class.p-4]="isMobile && mobileSearchOpen">
+      <div class="flex-1"
+        [ngClass]="isMobile && mobileSearchOpen
+          ? 'fixed inset-0 z-[70] bg-white dark:bg-gray-800 p-4'
+          : isMobile && !mobileSearchOpen ? 'hidden' : ''">
         <div *ngIf="isMobile && mobileSearchOpen" class="flex items-center gap-2 mb-3">
           <button (click)="closeMobileSearch()" class="text-gray-500 hover:text-gray-900 dark:hover:text-gray-100" aria-label="Fermer la recherche">
             <span class="material-icons text-[22px]" aria-hidden="true">arrow_back</span>
@@ -78,188 +83,192 @@ import { forkJoin } from 'rxjs';
             placeholder="Rechercher parcelle, visite, tâche…"
             class="w-full pl-10 pr-4 py-2 text-sm bg-gray-50 dark:bg-gray-700 dark:text-gray-100 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all"
           />
-          <!-- Loading indicator -->
-          <div *ngIf="searching"
-            class="absolute left-0 top-11 w-full bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 z-50 py-6 text-center">
-            <div class="animate-spin w-5 h-5 border-2 border-primary-600 border-t-transparent rounded-full mx-auto mb-2"></div>
-            <p class="text-sm text-gray-500">Recherche en cours...</p>
-          </div>
-          <!-- Search results dropdown -->
-          <div *ngIf="!searching && showSearchResults && (searchParcelles.length || searchVisites.length || searchTaches.length || searchEquipes.length || searchIntrants.length)"
-            id="search-results-listbox" role="listbox" aria-label="Résultats de recherche"
-            class="absolute left-0 top-11 w-full bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 z-50 overflow-hidden max-h-96 overflow-y-auto">
-            <!-- Parcelles -->
-            <div *ngIf="searchParcelles.length">
-              <p class="text-[10px] font-semibold text-gray-500 uppercase px-4 pt-3 pb-1">Parcelles</p>
-              <div *ngFor="let p of searchParcelles" (click)="goTo('/parcelles/' + p.id)"
-                class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors">
-                <span class="material-icons text-green-600 text-[16px]" aria-hidden="true">agriculture</span>
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900 truncate">{{ p.nom }}</p>
-                  <p class="text-xs text-gray-500">{{ p.code }} · {{ p.culture }} · {{ p.superficie }} ha</p>
-                </div>
-              </div>
-            </div>
-            <!-- Visites -->
-            <div *ngIf="searchVisites.length">
-              <p class="text-[10px] font-semibold text-gray-500 uppercase px-4 pt-3 pb-1">Visites</p>
-              <div *ngFor="let v of searchVisites" (click)="goTo('/visites/' + v.id)"
-                class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors">
-                <span class="material-icons text-blue-600 text-[16px]" aria-hidden="true">visibility</span>
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900 truncate">Visite du {{ v.date | date:'dd/MM/yyyy' }}</p>
-                  <p class="text-xs text-gray-500">{{ getParcelleNom(v.parcelleId) }} · {{ v.statut }}</p>
-                </div>
-              </div>
-            </div>
-            <!-- Tâches -->
-            <div *ngIf="searchTaches.length">
-              <p class="text-[10px] font-semibold text-gray-500 uppercase px-4 pt-3 pb-1">Tâches</p>
-              <div *ngFor="let t of searchTaches" (click)="goTo('/taches')"
-                class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors">
-                <span class="material-icons text-orange-600 text-[16px]" aria-hidden="true">task_alt</span>
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{{ t.titre }}</p>
-                  <p class="text-xs text-gray-500">{{ t.type }} · {{ t.priorite }}</p>
-                </div>
-              </div>
-            </div>
-            <!-- Équipes -->
-            <div *ngIf="searchEquipes.length">
-              <p class="text-[10px] font-semibold text-gray-500 uppercase px-4 pt-3 pb-1">Équipes</p>
-              <div *ngFor="let e of searchEquipes" (click)="goTo('/equipes')"
-                class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors">
-                <span class="material-icons text-purple-600 text-[16px]" aria-hidden="true">group</span>
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{{ e.nom }}</p>
-                  <p class="text-xs text-gray-500">{{ e.zone }} · {{ e.membres.length }} membres</p>
-                </div>
-              </div>
-            </div>
-            <!-- Intrants -->
-            <div *ngIf="searchIntrants.length">
-              <p class="text-[10px] font-semibold text-gray-500 uppercase px-4 pt-3 pb-1">Intrants</p>
-              <div *ngFor="let i of searchIntrants" (click)="goTo('/intrants')"
-                class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors">
-                <span class="material-icons text-teal-600 text-[16px]" aria-hidden="true">inventory_2</span>
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{{ i.nom }}</p>
-                  <p class="text-xs text-gray-500">{{ i.type }} · {{ i.quantiteStock }} {{ i.unite }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- No results -->
-          <div *ngIf="!searching && showSearchResults && searchQuery.length >= 2 && !searchParcelles.length && !searchVisites.length && !searchTaches.length && !searchEquipes.length && !searchIntrants.length"
-            class="absolute left-0 top-11 w-full bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 z-50 py-6 text-center">
-            <span class="material-icons text-gray-300 text-[24px] block mb-1" aria-hidden="true">search_off</span>
-            <p class="text-sm text-gray-500">Aucun résultat pour « {{ searchQuery }} »</p>
-          </div>
         </div>
       </div>
 
       <div class="flex items-center gap-2 ml-4">
-        <!-- Notifications -->
-        <div class="relative">
-          <button
-            (click)="toggleNotifs()"
-            class="relative w-11 h-11 flex items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            aria-label="Notifications"
-          >
-            <span class="material-icons text-[20px]" aria-hidden="true">notifications</span>
-            <span
-              *ngIf="notifCount() > 0"
-              class="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center"
-            >{{ notifCount() }}</span>
-          </button>
+        <!-- Dark mode toggle -->
+        <button
+          (click)="toggleDarkMode()"
+          class="w-11 h-11 flex items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          [attr.aria-label]="theme.isDark() ? 'Passer en mode clair' : 'Passer en mode sombre'"
+        >
+          <span class="material-icons text-[20px]" aria-hidden="true">
+            {{ theme.isDark() ? 'light_mode' : 'dark_mode' }}
+          </span>
+        </button>
 
-          <!-- Dropdown notifications -->
-          <div
-            *ngIf="showNotifs"
-            class="absolute right-0 top-12 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 z-50 overflow-hidden"
-          >
-            <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-              <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">Notifications</p>
-              <button (click)="marquerToutesLues()" class="text-xs text-primary-600 hover:text-primary-800 font-medium" aria-label="Marquer toutes les notifications comme lues">
-                Tout lire
-              </button>
-            </div>
-            <div class="max-h-80 overflow-y-auto">
-              <div
-                *ngFor="let notif of notifications; trackBy: trackById"
-                (click)="onNotifClick(notif)"
-                class="flex gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors border-b border-gray-50 dark:border-gray-700"
-                [class.bg-primary-50]="!notif.lue"
-              >
-                <div class="flex-shrink-0 mt-0.5">
-                  <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-[13px]"
-                    [class.bg-red-500]="notif.type === 'alerte'"
-                    [class.bg-yellow-500]="notif.type === 'avertissement'"
-                    [class.bg-primary-600]="notif.type === 'info'"
-                    [class.bg-green-500]="notif.type === 'succes'"
-                  >
-                    <span class="material-icons text-[14px]" aria-hidden="true">
-                      {{ notif.type === 'alerte' ? 'warning' : notif.type === 'succes' ? 'check_circle' : notif.type === 'avertissement' ? 'info' : 'info' }}
-                    </span>
-                  </div>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900 dark:text-gray-100 leading-tight" [class.font-semibold]="!notif.lue">{{ notif.titre }}</p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">{{ notif.message }}</p>
-                  <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">{{ notif.date | date:'dd/MM · HH:mm' }}</p>
-                </div>
-                <div class="flex-shrink-0 mt-2 flex items-center gap-1">
-                  <div *ngIf="!notif.lue" class="w-2 h-2 rounded-full bg-primary-600"></div>
-                  <span *ngIf="notif.lienType && notif.lienId" class="material-icons text-[14px] text-gray-400" aria-hidden="true">chevron_right</span>
-                </div>
-              </div>
-            </div>
-            <a routerLink="/notifications" (click)="showNotifs = false"
-              class="block text-center text-xs text-primary-600 hover:text-primary-800 font-medium py-3 border-t border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-              Voir toutes les notifications
-            </a>
-          </div>
-        </div>
+        <!-- Notifications button -->
+        <button
+          (click)="toggleNotifs()"
+          class="relative w-11 h-11 flex items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          aria-label="Notifications"
+        >
+          <span class="material-icons text-[20px]" aria-hidden="true">notifications</span>
+          <span
+            *ngIf="notifCount() > 0"
+            class="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center"
+          >{{ notifCount() }}</span>
+        </button>
 
         <!-- Divider -->
         <div class="w-px h-6 bg-gray-200 dark:bg-gray-700 mx-1"></div>
 
-        <!-- User menu -->
-        <div class="relative">
-          <button
-            (click)="toggleUserMenu()"
-            class="flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg px-2 py-1.5 transition-colors"
-            aria-label="Menu utilisateur"
-          >
-            <img *ngIf="userAvatar" [src]="userAvatar" alt="Avatar" class="w-8 h-8 rounded-full object-cover"/>
-            <div *ngIf="!userAvatar" class="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white text-xs font-bold">
-              {{ userInitials }}
-            </div>
-            <div class="hidden md:block text-left">
-              <p class="text-sm font-medium text-gray-900 dark:text-gray-100 leading-tight">{{ userName }}</p>
-              <p class="text-xs text-gray-500 dark:text-gray-400 capitalize">{{ userRole }}</p>
-            </div>
-            <span class="material-icons text-gray-500 text-[16px] hidden md:block" aria-hidden="true">expand_more</span>
-          </button>
-
-          <div *ngIf="showUserMenu" class="absolute right-0 top-12 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 z-50 py-1">
-            <a routerLink="/profil" (click)="showUserMenu = false" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
-              <span class="material-icons text-[16px] text-gray-500 dark:text-gray-400" aria-hidden="true">person</span> Mon profil
-            </a>
-            <a routerLink="/parametres" (click)="showUserMenu = false" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
-              <span class="material-icons text-[16px] text-gray-500 dark:text-gray-400" aria-hidden="true">settings</span> Paramètres
-            </a>
-            <div class="border-t border-gray-100 dark:border-gray-700 my-1"></div>
-            <button (click)="logout()" class="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20" aria-label="Se déconnecter">
-              <span class="material-icons text-[16px]" aria-hidden="true">logout</span> Déconnexion
-            </button>
+        <!-- User menu button -->
+        <button
+          (click)="toggleUserMenu()"
+          class="flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg px-2 py-1.5 transition-colors"
+          aria-label="Menu utilisateur"
+        >
+          <img *ngIf="userAvatar" [src]="userAvatar" alt="Avatar" class="w-8 h-8 rounded-full object-cover"/>
+          <div *ngIf="!userAvatar" class="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white text-xs font-bold">
+            {{ userInitials }}
           </div>
-        </div>
+          <div class="hidden md:block text-left">
+            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 leading-tight">{{ userName }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 capitalize">{{ userRole }}</p>
+          </div>
+          <span class="material-icons text-gray-500 text-[16px] hidden md:block" aria-hidden="true">expand_more</span>
+        </button>
       </div>
     </header>
 
-    <!-- Backdrop fermeture dropdowns -->
-    <div *ngIf="showNotifs || showUserMenu || showSearchResults" (click)="closeAll()" class="fixed inset-0 z-40"></div>
+    <!-- Search results dropdown (outside header for z-index) -->
+    <div *ngIf="searching"
+      class="fixed z-[60] bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 py-6 text-center"
+      [style.top]="'75px'" [style.left]="(sidebarWidth + 24) + 'px'" style="width: min(448px, calc(100vw - 340px));">
+      <div class="animate-spin w-5 h-5 border-2 border-primary-600 border-t-transparent rounded-full mx-auto mb-2"></div>
+      <p class="text-sm text-gray-500">Recherche en cours...</p>
+    </div>
+    <div *ngIf="!searching && showSearchResults && (searchParcelles.length || searchVisites.length || searchTaches.length || searchEquipes.length || searchIntrants.length)"
+      id="search-results-listbox" role="listbox" aria-label="Résultats de recherche"
+      class="fixed z-[60] bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden max-h-96 overflow-y-auto"
+      [style.top]="'75px'" [style.left]="(sidebarWidth + 24) + 'px'" style="width: min(448px, calc(100vw - 340px));">
+      <div *ngIf="searchParcelles.length">
+        <p class="text-[10px] font-semibold text-gray-500 uppercase px-4 pt-3 pb-1">Parcelles</p>
+        <div *ngFor="let p of searchParcelles" (click)="goTo('/parcelles/' + p.id)"
+          class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors">
+          <span class="material-icons text-green-600 text-[16px]" aria-hidden="true">agriculture</span>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{{ p.nom }}</p>
+            <p class="text-xs text-gray-500">{{ p.code }} · {{ p.culture }} · {{ p.superficie }} ha</p>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="searchVisites.length">
+        <p class="text-[10px] font-semibold text-gray-500 uppercase px-4 pt-3 pb-1">Visites</p>
+        <div *ngFor="let v of searchVisites" (click)="goTo('/visites/' + v.id)"
+          class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors">
+          <span class="material-icons text-blue-600 text-[16px]" aria-hidden="true">visibility</span>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">Visite du {{ v.date | date:'dd/MM/yyyy' }}</p>
+            <p class="text-xs text-gray-500">{{ getParcelleNom(v.parcelleId) }} · {{ v.statut }}</p>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="searchTaches.length">
+        <p class="text-[10px] font-semibold text-gray-500 uppercase px-4 pt-3 pb-1">Tâches</p>
+        <div *ngFor="let t of searchTaches" (click)="goTo('/taches')"
+          class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors">
+          <span class="material-icons text-orange-600 text-[16px]" aria-hidden="true">task_alt</span>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{{ t.titre }}</p>
+            <p class="text-xs text-gray-500">{{ t.type }} · {{ t.priorite }}</p>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="searchEquipes.length">
+        <p class="text-[10px] font-semibold text-gray-500 uppercase px-4 pt-3 pb-1">Équipes</p>
+        <div *ngFor="let e of searchEquipes" (click)="goTo('/equipes')"
+          class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors">
+          <span class="material-icons text-purple-600 text-[16px]" aria-hidden="true">group</span>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{{ e.nom }}</p>
+            <p class="text-xs text-gray-500">{{ e.zone }} · {{ e.membres.length }} membres</p>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="searchIntrants.length">
+        <p class="text-[10px] font-semibold text-gray-500 uppercase px-4 pt-3 pb-1">Intrants</p>
+        <div *ngFor="let i of searchIntrants" (click)="goTo('/intrants')"
+          class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors">
+          <span class="material-icons text-teal-600 text-[16px]" aria-hidden="true">inventory_2</span>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{{ i.nom }}</p>
+            <p class="text-xs text-gray-500">{{ i.type }} · {{ i.quantiteStock }} {{ i.unite }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="!searching && showSearchResults && searchQuery.length >= 2 && !searchParcelles.length && !searchVisites.length && !searchTaches.length && !searchEquipes.length && !searchIntrants.length"
+      class="fixed z-[60] bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 py-6 text-center"
+      [style.top]="'75px'" [style.left]="(sidebarWidth + 24) + 'px'" style="width: min(448px, calc(100vw - 340px));">
+      <span class="material-icons text-gray-300 text-[24px] block mb-1" aria-hidden="true">search_off</span>
+      <p class="text-sm text-gray-500">Aucun résultat pour « {{ searchQuery }} »</p>
+    </div>
+
+    <!-- Notification dropdown (outside header for z-index) -->
+    <div
+      *ngIf="showNotifs"
+      class="fixed z-[60] w-80 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden animate-dropdown"
+      style="top: 75px; right: 80px;"
+    >
+      <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+        <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">Notifications</p>
+        <button (click)="marquerToutesLues()" class="text-xs text-primary-600 hover:text-primary-800 font-medium" aria-label="Marquer toutes les notifications comme lues">
+          Tout lire
+        </button>
+      </div>
+      <div class="max-h-80 overflow-y-auto">
+        <div
+          *ngFor="let notif of notifications; trackBy: trackById"
+          (click)="onNotifClick(notif)"
+          class="flex gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors border-b border-gray-50 dark:border-gray-700"
+          [class.bg-primary-50]="!notif.lue"
+        >
+          <div class="flex-shrink-0 mt-0.5">
+            <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-[13px]"
+              [class.bg-red-500]="notif.type === 'alerte'"
+              [class.bg-yellow-500]="notif.type === 'avertissement'"
+              [class.bg-primary-600]="notif.type === 'info'"
+              [class.bg-green-500]="notif.type === 'succes'"
+            >
+              <span class="material-icons text-[14px]" aria-hidden="true">
+                {{ notif.type === 'alerte' ? 'warning' : notif.type === 'succes' ? 'check_circle' : notif.type === 'avertissement' ? 'info' : 'info' }}
+              </span>
+            </div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 leading-tight" [class.font-semibold]="!notif.lue">{{ notif.titre }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">{{ notif.message }}</p>
+            <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">{{ notif.date | date:'dd/MM · HH:mm' }}</p>
+          </div>
+          <div class="flex-shrink-0 mt-2 flex items-center gap-1">
+            <div *ngIf="!notif.lue" class="w-2 h-2 rounded-full bg-primary-600"></div>
+            <span *ngIf="notif.lienType && notif.lienId" class="material-icons text-[14px] text-gray-400" aria-hidden="true">chevron_right</span>
+          </div>
+        </div>
+      </div>
+      <a routerLink="/notifications" (click)="showNotifs = false"
+        class="block text-center text-xs text-primary-600 hover:text-primary-800 font-medium py-3 border-t border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+        Voir toutes les notifications
+      </a>
+    </div>
+
+    <!-- User menu dropdown (outside header for z-index) -->
+    <div *ngIf="showUserMenu" class="fixed z-[60] w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 py-1 animate-dropdown"
+      style="top: 75px; right: 16px;">
+      <a routerLink="/profil" (click)="showUserMenu = false" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
+        <span class="material-icons text-[16px] text-gray-500 dark:text-gray-400" aria-hidden="true">person</span> Mon profil
+      </a>
+      <a routerLink="/parametres" (click)="showUserMenu = false" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
+        <span class="material-icons text-[16px] text-gray-500 dark:text-gray-400" aria-hidden="true">settings</span> Paramètres
+      </a>
+      <div class="border-t border-gray-100 dark:border-gray-700 my-1"></div>
+      <button (click)="logout()" class="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20" aria-label="Se déconnecter">
+        <span class="material-icons text-[16px]" aria-hidden="true">logout</span> Déconnexion
+      </button>
+    </div>
   `,
 })
 export class TopbarComponent implements OnInit, OnDestroy {
@@ -291,7 +300,10 @@ export class TopbarComponent implements OnInit, OnDestroy {
   searchEquipes: Equipe[] = [];
   searchIntrants: Intrant[] = [];
 
+  private destroy$ = new Subject<void>();
+
   constructor(
+    public theme: ThemeService,
     private notifService: NotificationService,
     private auth: AuthService,
     private parcelleService: ParcelleService,
@@ -300,7 +312,8 @@ export class TopbarComponent implements OnInit, OnDestroy {
     private equipeService: EquipeService,
     private intrantService: IntrantService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private shortcuts: KeyboardShortcutsService
   ) {}
 
   ngOnInit(): void {
@@ -324,6 +337,21 @@ export class TopbarComponent implements OnInit, OnDestroy {
       this.allTaches = data.taches;
       this.allEquipes = data.equipes;
       this.allIntrants = data.intrants;
+    });
+
+    // Keyboard shortcuts
+    this.shortcuts.shortcut$.pipe(takeUntil(this.destroy$)).subscribe(event => {
+      if (event.action === 'search') {
+        setTimeout(() => this.mobileSearchInput?.nativeElement.focus(), 50);
+        this.showSearchResults = true;
+        this.cdr.markForCheck();
+      } else if (event.action === 'escape') {
+        this.showNotifs = false;
+        this.showUserMenu = false;
+        this.showSearchResults = false;
+        this.mobileSearchOpen = false;
+        this.cdr.markForCheck();
+      }
     });
 
     // Debounced search
@@ -353,6 +381,10 @@ export class TopbarComponent implements OnInit, OnDestroy {
 
   get userRole(): string {
     return this.auth.getRole();
+  }
+
+  toggleDarkMode(): void {
+    this.theme.setMode(this.theme.isDark() ? 'light' : 'dark');
   }
 
   toggleNotifs(): void {

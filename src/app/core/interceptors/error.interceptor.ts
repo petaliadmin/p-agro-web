@@ -20,6 +20,11 @@ export const errorInterceptor: HttpInterceptorFn = (
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
+      // Ne pas traiter les erreurs des API externes (Sentinel Hub)
+      if (req.url.includes('sentinel-hub.com')) {
+        return throwError(() => error);
+      }
+
       switch (error.status) {
         case 401:
           auth.logout();

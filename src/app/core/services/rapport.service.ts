@@ -73,7 +73,7 @@ export class RapportService {
     // Simule la génération d'un PDF (retourne une URL fictive)
     return of({
       url: '#',
-      nom: `Rapport_AgroAssist_${new Date().toISOString().split('T')[0]}.pdf`,
+      nom: `Rapport_PetaliaFarmOS_${new Date().toISOString().split('T')[0]}.pdf`,
     }).pipe(delay(1500));
   }
 

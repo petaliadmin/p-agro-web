@@ -1,9 +1,10 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, RouterLinkActive } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { TacheService } from '../../core/services/tache.service';
+import { ThemeService } from '../../core/services/theme.service';
 import { take } from 'rxjs/operators';
 
 interface NavItem {
@@ -16,14 +17,14 @@ interface NavItem {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule, RouterLinkActive],
+  imports: [CommonModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <aside
       class="fixed top-0 left-0 h-full z-40 flex flex-col transition-all duration-300"
       [class.w-64]="!collapsed"
       [class.w-16]="collapsed"
-      style="background: #1A7A4A;"
+      [style.background]="theme.isDark() ? '#0F1A15' : '#1A7A4A'"
     >
       <!-- Logo -->
       <div class="flex items-center border-b border-white/10" [class.px-4]="!collapsed" [class.px-2]="collapsed" [class.py-5]="!collapsed" [class.py-3]="collapsed" [class.justify-center]="collapsed" [class.gap-3]="!collapsed">
@@ -34,7 +35,7 @@ interface NavItem {
           </svg>
         </div>
         <div *ngIf="!collapsed" class="overflow-hidden flex-1">
-          <p class="text-white font-bold text-base leading-tight">AgroAssist</p>
+          <p class="text-white font-bold text-base leading-tight">Petalia Farm OS</p>
           <p class="text-white/60 text-xs">Supervision agricole</p>
         </div>
         <button
@@ -54,12 +55,12 @@ interface NavItem {
       <div *ngIf="!collapsed" class="px-4 py-3 border-b border-white/10">
         <div class="flex items-center gap-2">
           <img *ngIf="userAvatar" [src]="userAvatar" alt="Avatar" class="w-7 h-7 rounded-full object-cover"/>
-          <div *ngIf="!userAvatar" class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-bold">
+          <div *ngIf="!userAvatar" class="w-7 h-7 rounded-full bg-white/30 flex items-center justify-center text-white text-xs font-bold">
             {{ userInitials }}
           </div>
           <div class="overflow-hidden">
             <p class="text-white text-xs font-medium truncate">{{ userName }}</p>
-            <span class="inline-block bg-white/20 text-white text-[10px] font-medium px-2 py-0.5 rounded-full capitalize">
+            <span class="inline-block bg-white/30 text-white text-[10px] font-medium px-2 py-0.5 rounded-full capitalize">
               {{ userRole }}
             </span>
           </div>
@@ -71,7 +72,7 @@ interface NavItem {
         <div class="space-y-0.5 px-2">
           <ng-container *ngFor="let item of navItems; trackBy: trackByRoute">
             <a
-              [routerLink]="item.route"
+              [routerLink]="[item.route]"
               routerLinkActive="bg-white/15 text-white"
               #rla="routerLinkActive"
               [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
@@ -101,7 +102,7 @@ interface NavItem {
         <div class="space-y-0.5 px-2">
           <ng-container *ngFor="let item of analyticsItems; trackBy: trackByRoute">
             <a
-              [routerLink]="item.route"
+              [routerLink]="[item.route]"
               routerLinkActive="bg-white/15 text-white"
               #rlaAnalytics="routerLinkActive"
               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/75 hover:text-white hover:bg-white/10 transition-all duration-150"
@@ -142,7 +143,8 @@ export class SidebarComponent implements OnInit {
     private auth: AuthService,
     private notificationService: NotificationService,
     private tacheService: TacheService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public theme: ThemeService
   ) {}
 
   ngOnInit(): void {
@@ -201,6 +203,8 @@ export class SidebarComponent implements OnInit {
 
   analyticsItems: NavItem[] = [
     { label: 'Rapports', icon: 'bar_chart', route: '/rapports' },
+    { label: 'Planification', icon: 'event_note', route: '/planification' },
+    { label: 'Bilan économique', icon: 'account_balance', route: '/rapports-economiques' },
   ];
 
   onCollapse(): void {

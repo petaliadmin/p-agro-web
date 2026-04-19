@@ -5,7 +5,7 @@ import { FormDialogComponent } from '../../shared/components/form-dialog.compone
 import { DialogConfig, DialogRef } from '../../core/services/dialog.service';
 import { EquipeService, MembreService } from '../../core/services/equipe.service';
 import { ToastService } from '../../core/services/toast.service';
-import { Equipe, Membre, RoleMembre } from '../../core/models/membre.model';
+import { Equipe, Membre, RoleMembre, TypeMainOeuvre } from '../../core/models/membre.model';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -26,25 +26,25 @@ import { take } from 'rxjs/operators';
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Prénom *</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prénom *</label>
           <input type="text" [(ngModel)]="form.prenom" placeholder="Ex: Mamadou"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
             [class.border-red-300]="submitted && !form.prenom.trim()"/>
-          <p *ngIf="submitted && !form.prenom.trim()" class="text-xs text-red-500 mt-1">Le prénom est requis</p>
+          <p *ngIf="submitted && !form.prenom.trim()" class="text-xs text-red-500 dark:text-red-400 mt-1">Le prénom est requis</p>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom *</label>
           <input type="text" [(ngModel)]="form.nom" placeholder="Ex: Diallo"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
             [class.border-red-300]="submitted && !form.nom.trim()"/>
-          <p *ngIf="submitted && !form.nom.trim()" class="text-xs text-red-500 mt-1">Le nom est requis</p>
+          <p *ngIf="submitted && !form.nom.trim()" class="text-xs text-red-500 dark:text-red-400 mt-1">Le nom est requis</p>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Rôle *</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Rôle *</label>
           <select [(ngModel)]="form.role"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
             <option value="technicien">Technicien</option>
             <option value="chef_equipe">Chef d'équipe</option>
             <option value="applicateur">Applicateur</option>
@@ -53,29 +53,48 @@ import { take } from 'rxjs/operators';
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone *</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Téléphone *</label>
           <input type="tel" [(ngModel)]="form.telephone" placeholder="+221 77 123 45 67"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
             [class.border-red-300]="submitted && !isTelValid()"/>
-          <p *ngIf="submitted && !isTelValid()" class="text-xs text-red-500 mt-1">Format : +221 XX XXX XX XX</p>
+          <p *ngIf="submitted && !isTelValid()" class="text-xs text-red-500 dark:text-red-400 mt-1">Format : +221 XX XXX XX XX</p>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Équipe *</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Équipe *</label>
           <select [(ngModel)]="form.equipeId"
-            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
             [class.border-red-300]="submitted && !form.equipeId">
             <option value="">Sélectionner une équipe</option>
             <option *ngFor="let e of equipes" [value]="e.id">{{ e.nom }}</option>
           </select>
-          <p *ngIf="submitted && !form.equipeId" class="text-xs text-red-500 mt-1">L'équipe est requise</p>
+          <p *ngIf="submitted && !form.equipeId" class="text-xs text-red-500 dark:text-red-400 mt-1">L'équipe est requise</p>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Disponibilité</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type main-d'œuvre</label>
+          <select [(ngModel)]="form.typeMainOeuvre"
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400">
+            <option value="">Non spécifié</option>
+            <option value="familial">Familial</option>
+            <option value="journalier">Journalier</option>
+            <option value="groupement">Groupement</option>
+            <option value="permanent">Permanent</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Coût journalier (FCFA)</label>
+          <input type="number" [(ngModel)]="form.coutJournalier" min="0" step="500" placeholder="Ex: 3500"
+            class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"/>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Journalier : 3 000-5 000 FCFA · Permanent : 7 500-10 000 FCFA</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Disponibilité</label>
           <label class="flex items-center gap-2 cursor-pointer mt-2">
             <input type="checkbox" [(ngModel)]="form.disponible" class="rounded border-gray-300 text-primary-600 focus:ring-primary-400"/>
-            <span class="text-sm text-gray-700">Disponible</span>
+            <span class="text-sm text-gray-700 dark:text-gray-300">Disponible</span>
           </label>
         </div>
       </div>
@@ -96,6 +115,8 @@ export class MembreFormComponent implements OnInit {
     telephone: '+221 ',
     equipeId: '',
     disponible: true,
+    typeMainOeuvre: '' as TypeMainOeuvre | '',
+    coutJournalier: null as number | null,
   };
 
   get isEdit(): boolean { return !!this.dialogConfig?.data?.membre; }
@@ -122,6 +143,8 @@ export class MembreFormComponent implements OnInit {
         telephone: m.telephone,
         equipeId: m.equipeId,
         disponible: m.disponible,
+        typeMainOeuvre: m.typeMainOeuvre || '',
+        coutJournalier: m.coutJournalier ?? null,
       };
     }
 

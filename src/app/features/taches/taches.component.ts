@@ -26,26 +26,25 @@ import { take } from 'rxjs/operators';
     </app-page-header>
 
     <!-- Onglets -->
-    <div class="flex items-center gap-1 bg-gray-100 rounded-lg p-1 mb-5 w-fit">
+    <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1 mb-6 w-fit">
       <button *ngFor="let tab of tabs" (click)="activeTab = tab.id"
         class="px-4 py-2 rounded-md text-sm font-medium transition-all"
-        [class.bg-white]="activeTab === tab.id"
-        [class.shadow-sm]="activeTab === tab.id"
-        [class.text-gray-900]="activeTab === tab.id"
-        [class.text-gray-500]="activeTab !== tab.id"
+        [ngClass]="activeTab === tab.id
+          ? 'bg-white dark:bg-gray-600 shadow-sm text-gray-900 dark:text-gray-100'
+          : 'text-gray-500 dark:text-gray-400'"
       >{{ tab.label }}</button>
     </div>
 
     <!-- Filtres -->
-    <div class="flex flex-wrap items-center gap-3 mb-5">
-      <select [(ngModel)]="filtrePriorite" (ngModelChange)="applyFilters()" class="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white">
+    <div class="flex flex-wrap items-center gap-3 mb-6">
+      <select [(ngModel)]="filtrePriorite" (ngModelChange)="applyFilters()" class="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-100">
         <option value="">Toutes priorités</option>
         <option value="urgent">Urgent</option>
         <option value="haute">Haute</option>
         <option value="normale">Normale</option>
         <option value="basse">Basse</option>
       </select>
-      <select [(ngModel)]="filtreType" (ngModelChange)="applyFilters()" class="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white">
+      <select [(ngModel)]="filtreType" (ngModelChange)="applyFilters()" class="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-100">
         <option value="">Tous types</option>
         <option value="semis">Semis</option>
         <option value="irrigation">Irrigation</option>
@@ -54,14 +53,19 @@ import { take } from 'rxjs/operators';
         <option value="desherbage">Désherbage</option>
         <option value="recolte">Récolte</option>
         <option value="inspection">Inspection</option>
+        <option value="labour">Labour</option>
+        <option value="billonnage">Billonnage</option>
+        <option value="sarclage">Sarclage</option>
+        <option value="preparation_sol">Préparation sol</option>
+        <option value="buttage">Buttage</option>
       </select>
-      <select [(ngModel)]="filtreEquipe" (ngModelChange)="applyFilters()" class="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white">
+      <select [(ngModel)]="filtreEquipe" (ngModelChange)="applyFilters()" class="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-100">
         <option value="">Toutes équipes</option>
         <option *ngFor="let e of equipes" [value]="e.id">{{ e.nom }}</option>
       </select>
       <div class="flex items-center gap-1.5">
-        <span class="text-xs text-gray-500">Échéance avant le</span>
-        <input type="date" [(ngModel)]="filtreDateEcheance" (ngModelChange)="applyFilters()" class="text-sm border border-gray-200 rounded-lg px-2 py-1.5 bg-white"/>
+        <span class="text-xs text-gray-500 dark:text-gray-400">Échéance avant le</span>
+        <input type="date" [(ngModel)]="filtreDateEcheance" (ngModelChange)="applyFilters()" class="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-2 py-1.5 bg-white dark:bg-gray-700 dark:text-gray-100"/>
       </div>
     </div>
 
@@ -71,17 +75,18 @@ import { take } from 'rxjs/operators';
         <div class="flex items-center justify-between mb-3 px-1">
           <div class="flex items-center gap-2">
             <div class="w-2.5 h-2.5 rounded-full" [style.background]="col.color"></div>
-            <h3 class="text-sm font-semibold text-gray-900">{{ col.label }}</h3>
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ col.label }}</h3>
           </div>
-          <span class="bg-gray-100 text-gray-600 text-xs font-medium rounded-full px-2 py-0.5">{{ col.taches.length }}</span>
+          <span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium rounded-full px-2 py-0.5">{{ col.taches.length }}</span>
         </div>
         <div class="space-y-3 min-h-32 p-2 bg-gray-50 dark:bg-gray-800 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-600 transition-colors"
           [attr.data-kanban-col]="col.id"
           (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event, col.id)">
           <div *ngIf="loading"><div *ngFor="let i of [0,1,2]" class="skeleton h-24 rounded-lg"></div></div>
           <div *ngFor="let t of col.taches; trackBy: trackById"
-            class="card p-4 cursor-pointer hover:shadow-md transition-all border border-gray-100"
-            draggable="true" (dragstart)="onDragStart(t)" (click)="openEdit(t)"
+            class="card p-4 cursor-pointer hover:shadow-md dark:hover:shadow-gray-900/50 transition-all border border-gray-100 dark:border-gray-600"
+            [class.opacity-50]="draggedTache?.id === t.id" [class.shadow-lg]="draggedTache?.id === t.id" [class.scale-95]="draggedTache?.id === t.id"
+            draggable="true" (dragstart)="onDragStart(t)" (dragend)="onDragEnd()" (click)="openEdit(t)"
             (touchstart)="onTouchStart($event, t)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd($event)"
             style="touch-action: pan-y;">
             <div class="flex items-center justify-between mb-2">
@@ -94,7 +99,7 @@ import { take } from 'rxjs/operators';
               </span>
               <span class="text-lg">{{ typeEmoji(t.type) }}</span>
             </div>
-            <p class="text-sm font-semibold text-gray-900 mb-1 leading-tight">{{ t.titre }}</p>
+            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1 leading-tight">{{ t.titre }}</p>
             <p class="text-xs text-gray-500 line-clamp-2 mb-3">{{ t.description }}</p>
             <div class="flex items-center gap-1 mb-3">
               <span class="material-icons text-gray-500 text-[12px]" aria-hidden="true">agriculture</span>
@@ -105,11 +110,11 @@ import { take } from 'rxjs/operators';
                 <span class="text-[10px] text-gray-500">Progression</span>
                 <span class="text-[10px] font-medium text-gray-600">{{ t.completionPct }}%</span>
               </div>
-              <div class="w-full bg-gray-100 rounded-full h-1.5">
+              <div class="w-full bg-gray-100 dark:bg-gray-600 rounded-full h-1.5">
                 <div class="bg-primary-600 h-1.5 rounded-full transition-all" [style.width]="t.completionPct + '%'"></div>
               </div>
             </div>
-            <div class="flex items-center justify-between border-t border-gray-100 pt-2 mt-2">
+            <div class="flex items-center justify-between border-t border-gray-100 dark:border-gray-600 pt-2 mt-2">
               <span class="text-[10px] text-gray-500 flex items-center gap-0.5">
                 <span class="material-icons text-[10px]" aria-hidden="true">schedule</span>
                 {{ t.dateFin | date:'dd/MM' }}
@@ -118,12 +123,12 @@ import { take } from 'rxjs/operators';
                 <button *ngFor="let s of getNextStatuts(t.statut)"
                   (click)="changeStatut(t, s.statut); $event.stopPropagation()"
                   [attr.aria-label]="'Changer le statut de ' + t.titre + ' en ' + s.label"
-                  class="text-sm text-gray-500 hover:text-primary-600 border border-gray-200 hover:border-primary-300 rounded px-2 py-1 min-h-[36px] transition-colors">
+                  class="text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 border border-gray-200 dark:border-gray-600 hover:border-primary-300 rounded px-2 py-1 min-h-[36px] transition-colors">
                   {{ s.label }}
                 </button>
                 <button (click)="deleteTache(t); $event.stopPropagation()"
                   [attr.aria-label]="'Supprimer ' + t.titre"
-                  class="text-sm text-gray-400 hover:text-red-600 border border-gray-200 hover:border-red-300 rounded px-2 py-1 min-h-[36px] transition-colors">
+                  class="text-sm text-gray-400 hover:text-red-600 border border-gray-200 dark:border-gray-600 hover:border-red-300 rounded px-2 py-1 min-h-[36px] transition-colors">
                   <span class="material-icons text-[14px]" aria-hidden="true">delete</span>
                 </button>
               </div>
@@ -142,7 +147,7 @@ import { take } from 'rxjs/operators';
       <div *ngIf="!isMobile" class="overflow-x-auto">
       <table class="w-full min-w-[700px]">
         <thead>
-          <tr class="bg-gray-50">
+          <tr class="bg-gray-50 dark:bg-gray-800/50">
             <th class="table-header">Tâche</th>
             <th class="table-header">Type</th>
             <th class="table-header">Priorité</th>
@@ -156,8 +161,8 @@ import { take } from 'rxjs/operators';
         <tbody>
           <tr *ngFor="let t of filteredTaches; trackBy: trackById" class="table-row">
             <td class="table-cell">
-              <p class="font-medium text-gray-900">{{ t.titre }}</p>
-              <p class="text-xs text-gray-500 truncate max-w-xs">{{ t.description }}</p>
+              <p class="font-medium text-gray-900 dark:text-gray-100">{{ t.titre }}</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-xs">{{ t.description }}</p>
             </td>
             <td class="table-cell">{{ typeEmoji(t.type) }} {{ t.type }}</td>
             <td class="table-cell">
@@ -172,7 +177,7 @@ import { take } from 'rxjs/operators';
             <td class="table-cell text-xs">{{ t.dateFin | date:'dd/MM/yy' }}</td>
             <td class="table-cell">
               <div class="flex items-center gap-2">
-                <div class="flex-1 bg-gray-100 rounded-full h-1.5 min-w-16">
+                <div class="flex-1 bg-gray-100 dark:bg-gray-600 rounded-full h-1.5 min-w-16">
                   <div class="h-1.5 rounded-full" [style.width]="t.completionPct + '%'"
                     [class.bg-primary-600]="t.completionPct < 100"
                     [class.bg-green-500]="t.completionPct === 100"></div>
@@ -239,28 +244,28 @@ import { take } from 'rxjs/operators';
     <div *ngIf="activeTab === 'calendrier'">
       <div class="card overflow-hidden">
         <!-- Navigation semaine -->
-        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white">
-          <button (click)="previousWeek()" class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors" aria-label="Semaine précédente">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+          <button (click)="previousWeek()" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" aria-label="Semaine précédente">
             <span class="material-icons text-[20px] text-gray-600" aria-hidden="true">chevron_left</span>
           </button>
           <div class="flex items-center gap-3">
-            <h3 class="text-sm font-semibold text-gray-900">{{ calendarLabel }}</h3>
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ calendarLabel }}</h3>
             <button *ngIf="semaineOffset !== 0" (click)="goToCurrentWeek()" class="text-xs text-primary-600 hover:text-primary-800 font-medium">
               Aujourd'hui
             </button>
           </div>
-          <button (click)="nextWeek()" class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors" aria-label="Semaine suivante">
+          <button (click)="nextWeek()" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" aria-label="Semaine suivante">
             <span class="material-icons text-[20px] text-gray-600" aria-hidden="true">chevron_right</span>
           </button>
         </div>
         <!-- Desktop grid calendar -->
         <div class="hidden md:block">
-          <div class="grid grid-cols-7 border-b border-gray-200">
-            <div *ngFor="let j of joursSemaine" class="text-center py-3 text-xs font-semibold text-gray-500 uppercase bg-gray-50 border-r border-gray-100 last:border-r-0">{{ j }}</div>
+          <div class="grid grid-cols-7 border-b border-gray-200 dark:border-gray-700">
+            <div *ngFor="let j of joursSemaine" class="text-center py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase bg-gray-50 dark:bg-gray-800/50 border-r border-gray-100 dark:border-gray-700 last:border-r-0">{{ j }}</div>
           </div>
           <div class="grid grid-cols-7 min-h-[300px]">
             <div *ngFor="let jour of semaineJours; let i = index"
-              class="border-r border-b border-gray-100 last:border-r-0 p-2 min-h-[120px]">
+              class="border-r border-b border-gray-100 dark:border-gray-700 last:border-r-0 p-2 min-h-[120px]">
               <p class="text-xs font-medium text-gray-500 mb-2">{{ jour | date:'dd/MM' }}</p>
               <div class="space-y-1">
                 <div *ngFor="let t of getTachesForDay(jour)" class="text-[10px] rounded px-1.5 py-1 truncate"
@@ -436,7 +441,8 @@ export class TachesComponent implements OnInit, OnDestroy {
   private touchStartPos = { x: 0, y: 0 };
   private touchDragging = false;
 
-  onDragStart(tache: Tache): void { this.draggedTache = tache; }
+  onDragStart(tache: Tache): void { this.draggedTache = tache; this.cdr.markForCheck(); }
+  onDragEnd(): void { this.draggedTache = null; this.cdr.markForCheck(); }
 
   onTouchStart(event: TouchEvent, tache: Tache): void {
     const touch = event.touches[0];
@@ -473,16 +479,19 @@ export class TachesComponent implements OnInit, OnDestroy {
 
   onDragOver(event: DragEvent): void {
     event.preventDefault();
-    (event.currentTarget as HTMLElement).classList.add('border-primary-400', 'bg-primary-50');
+    const el = event.currentTarget as HTMLElement;
+    el.classList.add('border-primary-400', 'bg-primary-50', 'dark:bg-primary-900/20', 'ring-2', 'ring-primary-400/50');
   }
 
   onDragLeave(event: DragEvent): void {
-    (event.currentTarget as HTMLElement).classList.remove('border-primary-400', 'bg-primary-50');
+    const el = event.currentTarget as HTMLElement;
+    el.classList.remove('border-primary-400', 'bg-primary-50', 'dark:bg-primary-900/20', 'ring-2', 'ring-primary-400/50');
   }
 
   onDrop(event: DragEvent, statut: StatutTache): void {
     event.preventDefault();
-    (event.currentTarget as HTMLElement).classList.remove('border-primary-400', 'bg-primary-50');
+    const el = event.currentTarget as HTMLElement;
+    el.classList.remove('border-primary-400', 'bg-primary-50', 'dark:bg-primary-900/20', 'ring-2', 'ring-primary-400/50');
     if (this.draggedTache && this.draggedTache.statut !== statut) {
       this.changeStatut(this.draggedTache, statut);
     }
@@ -546,7 +555,7 @@ export class TachesComponent implements OnInit, OnDestroy {
   }
 
   typeEmoji(t: string): string {
-    return { semis: '🌱', irrigation: '💧', traitement: '🧪', fertilisation: '🌿', desherbage: '✂️', recolte: '🌾', inspection: '🔍' }[t] ?? '📋';
+    return { semis: '🌱', irrigation: '💧', traitement: '🧪', fertilisation: '🌿', desherbage: '✂️', recolte: '🌾', inspection: '🔍', labour: '🚜', billonnage: '🏗️', sarclage: '🪴', preparation_sol: '⛏️', buttage: '🏔️' }[t] ?? '📋';
   }
 
   prioriteLabel(p: string): string {

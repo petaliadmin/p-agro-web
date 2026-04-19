@@ -2,14 +2,14 @@ import { Tache } from '../../app/core/models/tache.model';
 import { Equipe, Membre } from '../../app/core/models/membre.model';
 
 export const MOCK_MEMBRES: Membre[] = [
-  { id: 'tech001', nom: 'Diallo', prenom: 'Mamadou', role: 'technicien', equipeId: 'eq001', telephone: '+221 77 123 45 67', disponible: true, tachesEnCours: 3, performanceScore: 87 },
-  { id: 'tech002', nom: 'Sarr', prenom: 'Fatou', role: 'technicien', equipeId: 'eq002', telephone: '+221 76 234 56 78', disponible: true, tachesEnCours: 2, performanceScore: 92 },
-  { id: 'tech003', nom: 'Ndiaye', prenom: 'Ousmane', role: 'chef_equipe', equipeId: 'eq001', telephone: '+221 70 345 67 89', disponible: false, tachesEnCours: 5, performanceScore: 95 },
-  { id: 'tech004', nom: 'Ba', prenom: 'Aissatou', role: 'applicateur', equipeId: 'eq002', telephone: '+221 78 456 78 90', disponible: true, tachesEnCours: 1, performanceScore: 78 },
-  { id: 'tech005', nom: 'Seck', prenom: 'Ibrahima', role: 'ouvrier', equipeId: 'eq001', telephone: '+221 77 567 89 01', disponible: true, tachesEnCours: 2, performanceScore: 71 },
-  { id: 'tech006', nom: 'Fall', prenom: 'Mariama', role: 'chef_equipe', equipeId: 'eq002', telephone: '+221 76 678 90 12', disponible: true, tachesEnCours: 4, performanceScore: 89 },
-  { id: 'tech007', nom: 'Diop', prenom: 'Moussa', role: 'technicien', equipeId: 'eq003', telephone: '+221 70 789 01 23', disponible: true, tachesEnCours: 2, performanceScore: 83 },
-  { id: 'tech008', nom: 'Cissé', prenom: 'Rokhaya', role: 'applicateur', equipeId: 'eq003', telephone: '+221 78 890 12 34', disponible: false, tachesEnCours: 3, performanceScore: 76 },
+  { id: 'tech001', nom: 'Diallo', prenom: 'Mamadou', role: 'technicien', equipeId: 'eq001', telephone: '+221 77 123 45 67', disponible: true, tachesEnCours: 3, performanceScore: 87, typeMainOeuvre: 'permanent', coutJournalier: 7500 },
+  { id: 'tech002', nom: 'Sarr', prenom: 'Fatou', role: 'technicien', equipeId: 'eq002', telephone: '+221 76 234 56 78', disponible: true, tachesEnCours: 2, performanceScore: 92, typeMainOeuvre: 'permanent', coutJournalier: 7500 },
+  { id: 'tech003', nom: 'Ndiaye', prenom: 'Ousmane', role: 'chef_equipe', equipeId: 'eq001', telephone: '+221 70 345 67 89', disponible: false, tachesEnCours: 5, performanceScore: 95, typeMainOeuvre: 'permanent', coutJournalier: 10000 },
+  { id: 'tech004', nom: 'Ba', prenom: 'Aissatou', role: 'applicateur', equipeId: 'eq002', telephone: '+221 78 456 78 90', disponible: true, tachesEnCours: 1, performanceScore: 78, typeMainOeuvre: 'journalier', coutJournalier: 3500 },
+  { id: 'tech005', nom: 'Seck', prenom: 'Ibrahima', role: 'ouvrier', equipeId: 'eq001', telephone: '+221 77 567 89 01', disponible: true, tachesEnCours: 2, performanceScore: 71, typeMainOeuvre: 'journalier', coutJournalier: 3000 },
+  { id: 'tech006', nom: 'Fall', prenom: 'Mariama', role: 'chef_equipe', equipeId: 'eq002', telephone: '+221 76 678 90 12', disponible: true, tachesEnCours: 4, performanceScore: 89, typeMainOeuvre: 'permanent', coutJournalier: 10000 },
+  { id: 'tech007', nom: 'Diop', prenom: 'Moussa', role: 'technicien', equipeId: 'eq003', telephone: '+221 70 789 01 23', disponible: true, tachesEnCours: 2, performanceScore: 83, typeMainOeuvre: 'permanent', coutJournalier: 7500 },
+  { id: 'tech008', nom: 'Cissé', prenom: 'Rokhaya', role: 'applicateur', equipeId: 'eq003', telephone: '+221 78 890 12 34', disponible: false, tachesEnCours: 3, performanceScore: 76, typeMainOeuvre: 'groupement', coutJournalier: 4000 },
 ];
 
 export const MOCK_EQUIPES: Equipe[] = [
@@ -38,6 +38,7 @@ export const MOCK_TACHES: Tache[] = [
     description: 'Application de Tricyclazole 75 WP contre la pyriculariose détectée lors de la dernière visite.',
     ressources: ['Tricyclazole 75 WP - 15 kg', 'Pulvérisateur à dos', 'EPI complet'],
     completionPct: 0,
+    modeTravail: 'manuel', mainOeuvre: 2, coutMainOeuvre: 7000,
   },
   {
     id: 't002', titre: 'Débouchage canal irrigation', type: 'irrigation', priorite: 'urgent',
@@ -46,6 +47,7 @@ export const MOCK_TACHES: Tache[] = [
     description: 'Dégagement du canal principal partiellement obstrué par des dépôts limoneux.',
     ressources: ['Pelle mécanique', '3 ouvriers', 'Camion'],
     completionPct: 60,
+    modeTravail: 'tracteur', mainOeuvre: 3, coutMainOeuvre: 18000,
   },
   {
     id: 't003', titre: 'Traitement insecticide Casamance A', type: 'traitement', priorite: 'urgent',

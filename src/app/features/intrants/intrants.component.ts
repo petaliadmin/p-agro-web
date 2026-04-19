@@ -26,7 +26,7 @@ import { take } from 'rxjs/operators';
     </app-page-header>
 
     <!-- KPI intrants -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-6">
       <app-stat-card label="Références" [value]="globalStats.totalReferences" icon="inventory_2" color="blue"></app-stat-card>
       <app-stat-card label="Alertes stock" [value]="globalStats.alertesStock" icon="warning" color="red"></app-stat-card>
       <app-stat-card label="Expirations proches" [value]="globalStats.alertesExpiration" icon="schedule" color="yellow"></app-stat-card>
@@ -34,7 +34,7 @@ import { take } from 'rxjs/operators';
     </div>
 
     <!-- Alertes -->
-    <div *ngIf="alertes.length || expirations.length" class="mb-5 space-y-2" aria-live="polite">
+    <div *ngIf="alertes.length || expirations.length" class="mb-6 space-y-2" aria-live="polite">
       <div *ngFor="let i of alertes" role="alert" class="flex items-center gap-3 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
         <span class="material-icons text-red-500 text-[18px]" aria-hidden="true">warning</span>
         <div class="flex-1">
@@ -58,7 +58,7 @@ import { take } from 'rxjs/operators';
     </div>
 
     <!-- Table stocks -->
-    <div class="card overflow-hidden mb-5">
+    <div class="card overflow-hidden mb-6">
       <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
         <h3 class="text-sm font-semibold text-gray-900">Stock actuel</h3>
         <button class="btn-secondary text-xs flex items-center gap-1">
@@ -136,7 +136,7 @@ import { take } from 'rxjs/operators';
     </div>
 
     <!-- Graphique consommation 30 jours -->
-    <div class="card p-5 mb-5">
+    <div class="card p-5 mb-6">
       <h3 class="text-sm font-semibold text-gray-900 mb-4">Consommation par type (30 derniers jours)</h3>
       <canvas #consoChart height="100"></canvas>
     </div>
@@ -195,7 +195,7 @@ export class IntrantsComponent implements OnInit {
       alertes: this.intrantService.getEnAlerte().pipe(take(1)),
       exp: this.intrantService.getExpirationProche().pipe(take(1)),
       stats: this.intrantService.getStats().pipe(take(1)),
-      conso: this.intrantService.getConsommation30j(),
+      conso: this.intrantService.getConsommation30j().pipe(take(1)),
     }).subscribe(data => {
       this.intrants = data.all;
       this.alertes = data.alertes;
